@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parfumelite Analytics</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Flatpickr -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/vn.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            500: '#14b8a6', // Teal main
+                            600: '#0d9488',
+                            900: '#134e4a',
+                        },
+                        accent: {
+                            purple: '#8b5cf6',
+                            rose: '#f43f5e',
+                            amber: '#f59e0b',
+                            blue: '#3b82f6'
+                        }
+                    },
+                    boxShadow: {
+                        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.07)',
+                    },
+                    backdropBlur: {
+                        'xs': '2px',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #f8fafc;
+            background-image:
+                radial-gradient(at 0% 0%, rgba(20, 184, 166, 0.1) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(139, 92, 246, 0.1) 0px, transparent 50%);
+        }
+
+        /* Glassmorphism Card Utils */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+        }
+
+        .glass-header {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+        }
+
+        /* Animations */
+        .fade-in-up {
+            animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .delay-100 {
+            animation-delay: 100ms;
+        }
+
+        .delay-200 {
+            animation-delay: 200ms;
+        }
+
+        .delay-300 {
+            animation-delay: 300ms;
+        }
+
+        .delay-400 {
+            animation-delay: 400ms;
+        }
+
+        /* Chart Container */
+        .chart-container {
+            position: relative;
+            height: 320px;
+            width: 100%;
+        }
+
+        /* Loading Skeleton */
+        .skeleton {
+            background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 6px;
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
+        }
+    </style>
+</head>
+
+<body class="text-slate-800 antialiased min-h-screen flex flex-col">
+
+    <!-- Navbar -->
+    <nav class="sticky top-0 z-50 glass-header">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center gap-3">
+                    <div
+                        class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-500 to-accent-purple flex items-center justify-center text-white shadow-lg shadow-brand-500/20">
+                        <i class="ph ph-chart-polar text-2xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-xl tracking-tight text-slate-900 leading-tight">Parfumelite</h1>
+                        <p class="text-xs text-slate-500 font-medium">Analytics Dashboard</p>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex items-center gap-4">
+                    <!-- Comparison Switch -->
+                    <label class="inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="compareToggle" class="sr-only peer">
+                        <div
+                            class="relative w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand-500">
+                        </div>
+                        <span class="ms-2 text-sm font-medium text-slate-600">So sánh</span>
+                    </label>
+
+                    <!-- Date Picker Button -->
+                    <button id="datePickerBtn"
+                        class="flex items-center gap-2 bg-white border border-slate-200 text-slate-700 px-4 py-2 rounded-xl text-sm font-medium hover:bg-slate-50 transition-all shadow-sm">
+                        <i class="ph ph-calendar-blank text-lg"></i>
+                        <span id="dateText">30 ngày qua</span>
+                        <i class="ph ph-caret-down text-slate-400"></i>
+                    </button>
+
+                    <button onclick="refreshData()"
+                        class="flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-xl text-sm font-medium transition-all shadow-lg shadow-slate-900/10 active:scale-95">
+                        <i class="ph ph-arrows-clockwise"></i>
+                        <span>Refresh</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full space-y-8">
+
+        <!-- Welcome Section -->
+        <div class="fade-in-up">
+            <h2 class="text-2xl font-bold text-slate-900">Tổng quan hiệu suất</h2>
+            <p class="text-slate-500 mt-1">Theo dõi các chỉ số quảng cáo chính theo thời gian thực.</p>
+        </div>
+
+        <!-- 1. KPI Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+            <!-- Spend -->
+            <div class="glass-card rounded-2xl p-5 hover:border-brand-200 transition-colors fade-in-up delay-100">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="p-2 bg-brand-50 rounded-lg text-brand-600">
+                        <i class="ph ph-wallet text-xl"></i>
+                    </div>
+                    <!-- Trend Badge (Mock) -->
+                    <div class="growth-badge inline-flex items-center gap-1 text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full"
+                        style="display:none">
+                        <!-- Dynamic Content -->
+                    </div>
+                </div>
+                <div class="space-y-1">
+                    <p class="text-sm font-medium text-slate-500">Tổng chi tiêu</p>
+                    <h3 class="text-2xl font-bold text-slate-900" id="kpi-spend">
+                        <div class="skeleton w-24 h-8"></div>
+                    </h3>
+                </div>
+            </div>
+
+            <!-- Impressions -->
+            <div class="glass-card rounded-2xl p-5 hover:border-accent-blue/30 transition-colors fade-in-up delay-100">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="p-2 bg-blue-50 rounded-lg text-blue-600">
+                        <i class="ph ph-eye text-xl"></i>
+                    </div>
+                    <div class="growth-badge inline-flex items-center gap-1 text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full"
+                        style="display:none"></div>
+                </div>
+                <div class="space-y-1">
+                    <p class="text-sm font-medium text-slate-500">Lượt hiển thị</p>
+                    <h3 class="text-2xl font-bold text-slate-900" id="kpi-impressions">
+                        <div class="skeleton w-24 h-8"></div>
+                    </h3>
+                </div>
+            </div>
+
+            <!-- Results -->
+            <div
+                class="glass-card rounded-2xl p-5 hover:border-accent-purple/30 transition-colors fade-in-up delay-200">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="p-2 bg-purple-50 rounded-lg text-purple-600">
+                        <i class="ph ph-check-circle text-xl"></i>
+                    </div>
+                    <div class="growth-badge inline-flex items-center gap-1 text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full"
+                        style="display:none"></div>
+                </div>
+                <div class="space-y-1">
+                    <p class="text-sm font-medium text-slate-500">Kết quả (Action)</p>
+                    <h3 class="text-2xl font-bold text-slate-900" id="kpi-results">
+                        <div class="skeleton w-24 h-8"></div>
+                    </h3>
+                </div>
+            </div>
+
+            <!-- CPM -->
+            <div class="glass-card rounded-2xl p-5 hover:border-accent-amber/30 transition-colors fade-in-up delay-200">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="p-2 bg-amber-50 rounded-lg text-amber-600">
+                        <i class="ph ph-currency-dollar text-xl"></i>
+                    </div>
+                    <div class="growth-badge inline-flex items-center gap-1 text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full"
+                        style="display:none"></div>
+                </div>
+                <div class="space-y-1">
+                    <p class="text-sm font-medium text-slate-500">CPM trung bình</p>
+                    <h3 class="text-2xl font-bold text-slate-900" id="kpi-cpm">
+                        <div class="skeleton w-24 h-8"></div>
+                    </h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Main Charts Area -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 fade-in-up delay-300">
+            <!-- Trend Chart -->
+            <div class="lg:col-span-2 glass-card rounded-2xl p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h3 class="font-bold text-slate-900">Xu hướng chi tiêu</h3>
+                        <p class="text-xs text-slate-500">Chi tiêu vs. Hiển thị theo ngày</p>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="flex items-center gap-2 text-xs text-slate-600">
+                            <span class="w-2 h-2 rounded-full bg-brand-500"></span> Chi tiêu
+                        </div>
+                        <div class="flex items-center gap-2 text-xs text-slate-600">
+                            <span class="w-2 h-2 rounded-full bg-accent-blue opacity-50"></span> Impressions
+                        </div>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="chartTrend"></canvas>
+                </div>
+            </div>
+
+            <!-- Campaign Donut -->
+            <div class="glass-card rounded-2xl p-6">
+                <div class="mb-6">
+                    <h3 class="font-bold text-slate-900">Top Chiến dịch</h3>
+                    <p class="text-xs text-slate-500">Phân bổ ngân sách theo campaign</p>
+                </div>
+                <div class="chart-container" style="height: 280px;">
+                    <canvas id="chartCampaigns"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Demographics & Region -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 fade-in-up delay-400">
+            <!-- Age & Gender -->
+            <div class="glass-card rounded-2xl p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="font-bold text-slate-900">Nhân khẩu học</h3>
+                    <div class="flex bg-slate-100 rounded-lg p-1 text-xs font-medium">
+                        <button class="px-3 py-1 bg-white rounded shadow-sm text-slate-800">Tuổi & Giới tính</button>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="chartDemographics"></canvas>
+                </div>
+            </div>
+
+            <!-- Regions -->
+            <div class="glass-card rounded-2xl p-6">
+                <div class="mb-6">
+                    <h3 class="font-bold text-slate-900">Khu vực địa lý</h3>
+                    <p class="text-xs text-slate-500">Top tỉnh/thành phố chi tiêu cao nhất</p>
+                </div>
+                <div class="chart-container">
+                    <canvas id="chartRegions"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Data Table -->
+        <div class="glass-card rounded-2xl overflow-hidden fade-in-up delay-400">
+            <div class="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
+                <h3 class="font-bold text-slate-900">Chi tiết chiến dịch</h3>
+                <button
+                    class="text-brand-600 hover:text-brand-700 text-sm font-medium flex items-center gap-1 transition-colors">
+                    Export CSV <i class="ph ph-download-simple"></i>
+                </button>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left">
+                    <thead class="text-xs text-slate-500 uppercase bg-slate-50/50 font-semibold">
+                        <tr>
+                            <th class="px-6 py-3">Campaign Name</th>
+                            <th class="px-6 py-3 text-right">Chi tiêu</th>
+                            <th class="px-6 py-3 text-right">Impressions</th>
+                            <th class="px-6 py-3 text-right">Results</th>
+                            <th class="px-6 py-3 text-right">CPR</th>
+                            <th class="px-6 py-3 text-right">CPM</th>
+                        </tr>
+                    </thead>
+                    <tbody id="campaignTable" class="divide-y divide-slate-100">
+                        <tr>
+                            <td colspan="6" class="px-6 py-8 text-center text-slate-400">Đang tải dữ liệu...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-auto border-t border-slate-200 bg-white/50 backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto px-4 py-6 text-center text-xs text-slate-400">
+            <p>&copy; 2024 Parfumelite Analytics. Powered by Cloudflare D1 & Workers.</p>
+        </div>
+    </footer>
+
+    <!-- Logic Script -->
+    <script>
+        // --- CONFIG & STATE ---
+        const API_BASE = 'https://parfumelite-dashboard.duongthien408.workers.dev'; // Worker API URL
+        let chartInstances = {};
+
+        let state = {
+            startDate: null,
+            endDate: null,
+            compare: false
+        };
+
+        // Brand Palette
+        const colors = {
+            teal: '#14b8a6',
+            tealLight: '#ccfbf1',
+            blue: '#3b82f6',
+            purple: '#8b5cf6',
+            rose: '#f43f5e',
+            amber: '#f59e0b',
+            slate: '#64748b',
+            chartPalette: ['#14b8a6', '#8b5cf6', '#f59e0b', '#3b82f6', '#f43f5e', '#64748b']
+        };
+
+        // --- FETCH UTILS ---
+        async function fetchData(endpoint, params = {}) {
+            try {
+                const url = new URL(`${API_BASE}${endpoint}`);
+                if (state.startDate && state.endDate) {
+                    url.searchParams.append('startDate', state.startDate);
+                    url.searchParams.append('endDate', state.endDate);
+                }
+                if (state.compare) {
+                    url.searchParams.append('compare', 'true');
+                }
+                Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+
+                const res = await fetch(url);
+                const json = await res.json();
+                return json.success ? json.data : null;
+            } catch (e) {
+                console.error("API Error", e);
+                return null;
+            }
+        }
+
+        async function refreshData() {
+            // Loading State
+            document.body.style.cursor = 'wait';
+
+            // Parallel Fetch
+            const [overview, daily, campaigns, demo, regions] = await Promise.all([
+                fetchData('/api/overview'),
+                fetchData('/api/daily'),
+                fetchData('/api/campaigns', { limit: 5 }),
+                fetchData('/api/demographics'),
+                fetchData('/api/regions', { limit: 10 })
+            ]);
+
+            if (overview) updateKPIs(overview.kpis);
+            if (daily) updateTrendChart(daily);
+            if (campaigns) {
+                updateCampaignChart(campaigns);
+                updateTable(campaigns);
+            }
+            if (demo) updateDemoChart(demo);
+            if (regions) updateRegionChart(regions);
+
+            document.body.style.cursor = 'default';
+        }
+
+        // --- UPDATERS ---
+
+        function updateKPIs(kpis) {
+            const setVal = (id, val, isCurr = false, growth = null) => {
+                const el = document.getElementById(id);
+                el.innerText = isCurr ? formatCurrency(val) : formatNumber(val);
+                el.classList.remove('skeleton');
+
+                // Growth Badge Update
+                if (growth !== null && state.compare) {
+                    const badge = el.parentElement.parentElement.querySelector('.growth-badge');
+                    if (badge) {
+                        const isPositive = growth >= 0;
+                        badge.className = `growth-badge inline-flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full ${isPositive ? 'text-emerald-600 bg-emerald-50' : 'text-rose-600 bg-rose-50'}`;
+                        badge.innerHTML = `<i class="ph ph-trend-${isPositive ? 'up' : 'down'}"></i> ${Math.abs(growth).toFixed(1)}%`;
+                        badge.style.display = 'inline-flex';
+                    }
+                } else {
+                    // Hide badge if not comparing
+                    const badge = el.parentElement.parentElement.querySelector('.growth-badge');
+                    if (badge) badge.style.display = 'none';
+                }
+            };
+
+            setVal('kpi-spend', kpis.total_spend, true, kpis.growth_spend);
+            setVal('kpi-impressions', kpis.total_impressions, false, kpis.growth_impressions);
+            setVal('kpi-results', kpis.total_results, false, kpis.growth_results);
+            setVal('kpi-cpm', kpis.avg_cpm, true, kpis.growth_cpm);
+        }
+
+        function updateTable(data) {
+            const tbody = document.getElementById('campaignTable');
+            if (!data || data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-8 text-center text-slate-400">Không có dữ liệu</td></tr>';
+                return;
+            }
+            tbody.innerHTML = data.map(row => `
+                <tr class="hover:bg-slate-50 transition-colors group">
+                    <td class="px-6 py-4 font-medium text-slate-900 group-hover:text-brand-600 transition-colors">
+                        ${row.campaign_name}
+                        <div class="text-[10px] text-slate-400 font-normal uppercase tracking-wider">${row.objective}</div>
+                    </td>
+                    <td class="px-6 py-4 text-right tabular-nums">${formatCurrency(row.total_spend)}</td>
+                    <td class="px-6 py-4 text-right tabular-nums text-slate-600">${formatNumber(row.total_impressions)}</td>
+                    <td class="px-6 py-4 text-right tabular-nums text-slate-600">${formatNumber(row.total_results)}</td>
+                    <td class="px-6 py-4 text-right tabular-nums text-slate-600">${formatCurrency(row.cpr)}</td>
+                    <td class="px-6 py-4 text-right tabular-nums text-slate-600">${formatCurrency(row.cpm)}</td>
+                </tr>
+            `).join('');
+        }
+
+        // --- CHARTS ---
+
+        Chart.defaults.font.family = "'Inter', sans-serif";
+        Chart.defaults.color = '#64748b';
+        Chart.defaults.scale.grid.color = '#f1f5f9';
+
+        function updateTrendChart(dataPayload) {
+            const ctx = document.getElementById('chartTrend').getContext('2d');
+            if (chartInstances.trend) chartInstances.trend.destroy();
+
+            // Handle Comparison structure vs Simple structure
+            let currentData = Array.isArray(dataPayload) ? dataPayload : dataPayload.current;
+            let comparisonData = (!Array.isArray(dataPayload) && dataPayload.comparison) ? dataPayload.comparison : null;
+
+            // Gradient Fill
+            const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+            gradient.addColorStop(0, 'rgba(20, 184, 166, 0.2)');
+            gradient.addColorStop(1, 'rgba(20, 184, 166, 0)');
+
+            const datasets = [
+                {
+                    label: 'Chi tiêu (Kỳ này)',
+                    data: currentData.map(d => d.spend),
+                    borderColor: colors.teal,
+                    backgroundColor: gradient,
+                    borderWidth: 2,
+                    tension: 0.4,
+                    fill: true,
+                    yAxisID: 'y'
+                }
+            ];
+
+            if (comparisonData && state.compare) {
+                datasets.push({
+                    label: 'Chi tiêu (Kỳ trước)',
+                    data: comparisonData.map(d => d.spend),
+                    borderColor: colors.slate,
+                    borderWidth: 2,
+                    borderDash: [4, 4],
+                    tension: 0.4,
+                    pointRadius: 0,
+                    yAxisID: 'y'
+                });
+            }
+
+            chartInstances.trend = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: currentData.map(d => formatDate(d.full_date)),
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: { legend: { display: state.compare } }, // Show legend only if comparing
+                    scales: {
+                        y: { type: 'linear', position: 'left', beginAtZero: true },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        function updateCampaignChart(data) {
+            const ctx = document.getElementById('chartCampaigns').getContext('2d');
+            if (chartInstances.campaigns) chartInstances.campaigns.destroy();
+
+            chartInstances.campaigns = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: data.map(d => d.campaign_name),
+                    datasets: [{
+                        data: data.map(d => d.total_spend),
+                        backgroundColor: colors.chartPalette,
+                        borderWidth: 0,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '65%',
+                    plugins: {
+                        legend: { position: 'right', labels: { boxWidth: 10, usePointStyle: true } }
+                    }
+                }
+            });
+        }
+
+        function updateDemoChart(data) {
+            // Combine Age and Gender for a stacked bar or just show Age for simplicity in this demo
+            const ctx = document.getElementById('chartDemographics').getContext('2d');
+            if (chartInstances.demo) chartInstances.demo.destroy();
+
+            const ageData = data.by_age;
+
+            chartInstances.demo = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ageData.map(d => d.age_range),
+                    datasets: [{
+                        label: 'Chi tiêu',
+                        data: ageData.map(d => d.spend),
+                        backgroundColor: colors.purple,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        function updateRegionChart(data) {
+            const ctx = document.getElementById('chartRegions').getContext('2d');
+            if (chartInstances.regions) chartInstances.regions.destroy();
+
+            chartInstances.regions = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.map(d => d.region_name),
+                    datasets: [{
+                        label: 'Chi tiêu',
+                        data: data.map(d => d.spend),
+                        backgroundColor: colors.amber,
+                        borderRadius: 4,
+                        barThickness: 20
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { beginAtZero: true },
+                        y: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        // --- FORMATTERS ---
+        const formatCurrency = (val) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 }).format(val);
+        const formatNumber = (val) => new Intl.NumberFormat('vi-VN').format(val);
+        const formatDate = (str) => {
+            const d = new Date(str);
+            return `${d.getDate()}/${d.getMonth() + 1}`;
+        }
+
+        // --- INIT & EVENTS ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize Flatpickr
+            flatpickr("#datePickerBtn", {
+                mode: "range",
+                dateFormat: "Y-m-d",
+                defaultDate: [new Date().setDate(new Date().getDate() - 30), new Date()],
+                locale: "vn", // Would need locale script, default English for now
+                onChange: function (selectedDates, dateStr, instance) {
+                    if (selectedDates.length === 2) {
+                        const start = selectedDates[0];
+                        const end = selectedDates[1];
+                        // Format to YYYY-MM-DD
+                        const fmt = d => d.toISOString().split('T')[0];
+                        state.startDate = fmt(start);
+                        state.endDate = fmt(end);
+
+                        // Update Button Text
+                        document.getElementById('dateText').innerText = `${formatDate(state.startDate)} - ${formatDate(state.endDate)}`;
+
+                        refreshData();
+                    }
+                }
+            });
+
+            // Set initial state
+            const end = new Date();
+            const start = new Date();
+            start.setDate(start.getDate() - 30);
+            state.startDate = start.toISOString().split('T')[0];
+            state.endDate = end.toISOString().split('T')[0];
+            document.getElementById('dateText').innerText = `${formatDate(state.startDate)} - ${formatDate(state.endDate)}`;
+
+            // Toggle Comparison
+            document.getElementById('compareToggle').addEventListener('change', (e) => {
+                state.compare = e.target.checked;
+                refreshData();
+            });
+
+            refreshData();
+        });
+
+
+    </script>
+</body>
+
+</html>
+```
