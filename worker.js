@@ -451,7 +451,7 @@ async function ingestPerformance(env, request) {
   const data = await request.json();
 
   if (!Array.isArray(data)) {
-    return { success: false, error: 'Data must be an array' };
+    return jsonResponse({ error: 'Data must be an array' }, 400);
   }
 
   let processed = 0;
@@ -494,11 +494,10 @@ async function ingestPerformance(env, request) {
     }
   }
 
-  return {
-    success: true,
+  return jsonResponse({
     processed,
     errors: errors.length > 0 ? errors : null,
-  };
+  });
 }
 
 async function ingestDemographics(env, request) {
@@ -506,7 +505,7 @@ async function ingestDemographics(env, request) {
   const data = await request.json();
 
   if (!Array.isArray(data)) {
-    return { success: false, error: 'Data must be an array' };
+    return jsonResponse({ error: 'Data must be an array' }, 400);
   }
 
   let processed = 0;
@@ -539,7 +538,7 @@ async function ingestDemographics(env, request) {
     }
   }
 
-  return { success: true, processed, errors: errors.length > 0 ? errors : null };
+  return jsonResponse({ processed, errors: errors.length > 0 ? errors : null });
 }
 
 async function ingestRegions(env, request) {
@@ -547,7 +546,7 @@ async function ingestRegions(env, request) {
   const data = await request.json();
 
   if (!Array.isArray(data)) {
-    return { success: false, error: 'Data must be an array' };
+    return jsonResponse({ error: 'Data must be an array' }, 400);
   }
 
   let processed = 0;
@@ -577,7 +576,7 @@ async function ingestRegions(env, request) {
     }
   }
 
-  return { success: true, processed, errors: errors.length > 0 ? errors : null };
+  return jsonResponse({ processed, errors: errors.length > 0 ? errors : null });
 }
 
 // ============================================================
@@ -712,9 +711,9 @@ function getWeekOfYear(date) {
 async function healthCheck(env) {
   try {
     const result = await env.DB.prepare('SELECT 1 as ok').first();
-    return { success: true, database: 'connected', timestamp: new Date().toISOString() };
+    return jsonResponse({ database: 'connected', timestamp: new Date().toISOString() });
   } catch (err) {
-    return { success: false, database: 'error', error: err.message };
+    return jsonResponse({ database: 'error', error: err.message }, 500);
   }
 }
 

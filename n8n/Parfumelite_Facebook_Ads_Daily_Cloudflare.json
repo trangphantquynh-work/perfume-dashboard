@@ -1,0 +1,265 @@
+{
+  "name": "Parfumelite - Facebook Ads Daily to Cloudflare",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 6,
+              "triggerAtMinute": 1
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -620,
+        -100
+      ],
+      "id": "b37bf7e1-6ec3-448f-b4b2-f0b6a6d32f37",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "jsCode": "const tzOffsetMinutes = 7 * 60; // GMT+7\nconst now = new Date();\nconst nowUTC = new Date(now.getTime() + now.getTimezoneOffset()*60000);\nconst vnNow = new Date(nowUTC.getTime() + tzOffsetMinutes*60000);\n\n// yesterday range in VN time\nconst y = new Date(vnNow);\ny.setDate(vnNow.getDate() - 1);\n\n// since: 00:00 hôm qua, until: 23:59 hôm qua (API theo date inclusive)\nconst yyyy = y.getFullYear();\nconst mm = String(y.getMonth()+1).padStart(2,'0');\nconst dd = String(y.getDate()).padStart(2,'0');\n\nreturn [{ since: `${yyyy}-${mm}-${dd}`, until: `${yyyy}-${mm}-${dd}` }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -380,
+        -100
+      ],
+      "id": "522da47a-32c5-442b-83a5-79bece96fa58",
+      "name": "Last day"
+    },
+    {
+      "parameters": {
+        "url": "https://graph.facebook.com/v22.0/act_1214024666289319/insights",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "facebookGraphApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "level",
+              "value": "ad"
+            },
+            {
+              "name": "time_range",
+              "value": "={\"since\":\"{{ $json.since }}\",\"until\":\"{{ $json.until }}\"}"
+            },
+            {
+              "name": "limit",
+              "value": "1000"
+            },
+            {
+              "name": "fields",
+              "value": "campaign_name,adset_name,ad_name,ad_id,impressions,reach,frequency,spend,clicks,ctr,cpm,cpc,inline_link_clicks,outbound_clicks,outbound_clicks_ctr,cost_per_result,actions"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -180,
+        -100
+      ],
+      "id": "be78be76-581b-4812-acc2-ba5d36c5e7a4",
+      "name": "FB Ads API",
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "w2ojdTqpdn5ZRYyD",
+          "name": "FB Ánh Vy"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const rawData = items[0].json.data;\n\nconst filtered = rawData.filter(ad => parseFloat(ad.spend) > 0);\n\nreturn filtered.map(ad => ({ json: ad }));\n\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        -100
+      ],
+      "id": "9e94334f-173d-44d3-b888-878160740aaa",
+      "name": "Filter Spent > 0"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  const actions = item.json.actions || [];\n  const result = { ...item.json };\n\n  // Tách từng action_type thành cột riêng\n  for (const a of actions) {\n    result[a.action_type] = a.value;\n  }\n\n  // Xóa cột gốc actions\n  delete result.actions;\n\n  return { json: result };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        160,
+        -100
+      ],
+      "id": "2b9be7fe-6a7c-4401-93a3-17e8a0062eec",
+      "name": "Break Actions"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Node A: Extract CPRs (one item per CPR entry)\n\nfunction toNumber(v) {\n  if (v == null) return 0;\n  if (typeof v === 'number') return Number.isFinite(v) ? v : 0;\n  const s = String(v).trim().replace(/,/g, '');\n  const n = Number(s);\n  return Number.isFinite(n) ? n : 0;\n}\n\nfunction pickCPRValue(entry) {\n  // prefer default attribution window; else pick max value\n  const vals = Array.isArray(entry?.values) ? entry.values : [];\n  let def = vals.find(v => Array.isArray(v?.attribution_windows) && v.attribution_windows.includes('default') && v?.value != null);\n  if (def) return toNumber(def.value);\n\n  let maxV = null;\n  for (const v of vals) {\n    if (v?.value == null) continue;\n    const nv = toNumber(v.value);\n    if (maxV == null || nv > maxV) maxV = nv;\n  }\n  if (maxV != null) return maxV;\n\n  if (entry?.value != null) return toNumber(entry.value);\n  return null;\n}\n\nconst out = [];\n\nfor (const { json: d } of items) {\n  const cprs = Array.isArray(d?.cost_per_result) ? d.cost_per_result : [];\n\n  if (!cprs.length) {\n    // vẫn tạo 1 item trống để node B có thể biết \"không có CPR\"\n    out.push({\n      json: {\n        _base: d,\n        indicator: null,\n        action_key: null,\n        cpr_value: null,\n      }\n    });\n    continue;\n  }\n\n  for (const entry of cprs) {\n    const indicator = entry?.indicator ?? (entry?.action_type ? `actions:${entry.action_type}` : null);\n    const cprValue = pickCPRValue(entry);\n\n    // rút action_key từ \"actions:<action>\"\n    let actionKey = null;\n    if (indicator && indicator.startsWith('actions:')) {\n      actionKey = indicator.slice('actions:'.length);\n    } else if (indicator && !indicator.includes(':')) {\n      // rất hiếm khi Meta trả plain key\n      actionKey = indicator;\n    }\n\n    out.push({\n      json: {\n        _base: d,               // giữ nguyên data gốc để node B tra cứu\n        indicator,\n        action_key: actionKey,  // vd: offsite_conversion.fb_pixel_purchase, link_click, landing_page_view...\n        cpr_value: cprValue\n      }\n    });\n  }\n}\n\nreturn out;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        340,
+        -100
+      ],
+      "id": "39a4ee9d-eaaa-4dbc-a058-db358a7f1cef",
+      "name": "Extract CPR"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Node B: Resolve Results for each CPR indicator\n// Strategy: lấy action_key từ Node A → tìm count tương ứng\n// Ưu tiên: actions[] map → trường phẳng trùng tên → alias phổ biến\n// Nếu không tìm thấy → Results = 0 (theo yêu cầu)\n\nfunction toNumber(v) {\n  if (v == null) return 0;\n  if (typeof v === 'number') return Number.isFinite(v) ? v : 0;\n  const s = String(v).trim().replace(/,/g, '');\n  const n = Number(s);\n  return Number.isFinite(n) ? n : 0;\n}\nconst arr = x => (Array.isArray(x) ? x : []);\n\nfunction mapByActionType(array) {\n  const m = Object.create(null);\n  for (const x of array) {\n    const k = x?.action_type;\n    if (!k) continue;\n    const v = toNumber(x?.value);\n    m[k] = Math.max(m[k] ?? 0, v);\n  }\n  return m;\n}\n\n// alias tối thiểu cho các action thường gặp\nconst ALIAS = {\n  'offsite_conversion.fb_pixel_purchase': [\n    'offsite_conversion.fb_pixel_purchase',\n    'purchase',\n    'onsite_web_purchase',\n    'onsite_web_app_purchase',\n    'web_in_store_purchase',\n    'web_app_in_store_purchase',\n    'omni_purchase',\n  ],\n  'link_click': [\n    'link_click',\n    'inline_link_clicks'\n  ],\n  'landing_page_view': [\n    'landing_page_view',\n    'omni_landing_page_view'\n  ],\n  'lead': [\n    'lead', 'leads', 'onsite_conversion.lead_grouped'\n  ],\n  'post_engagement': [\n    'post_engagement', 'page_engagement'\n  ],\n  'onsite_conversion.messaging_conversation_started_7d': [\n    'onsite_conversion.messaging_conversation_started_7d'\n  ],\n};\n\nfunction resolveCount(base, actionKey) {\n  if (!actionKey) return 0;\n\n  // 1) actions map\n  const A = mapByActionType(arr(base?.actions));\n  if (A[actionKey] != null) return toNumber(A[actionKey]);\n\n  // 2) trường phẳng – chính xác theo key\n  if (base?.[actionKey] != null) return toNumber(base[actionKey]);\n\n  // 3) alias – dò theo danh sách thay thế\n  const candidates = ALIAS[actionKey] || [];\n  for (const k of candidates) {\n    if (A[k] != null) return toNumber(A[k]);\n    if (base?.[k] != null) return toNumber(base[k]);\n  }\n\n  // 4) không có → 0 (theo yêu cầu)\n  return 0;\n}\n\nconst out = [];\n\nfor (const { json } of items) {\n  const base = json?._base || {};\n  const indicator = json?.indicator || null;\n  const actionKey = json?.action_key || null;\n  const cpr = json?.cpr_value ?? null;\n\n  const spend       = toNumber(base.spend);\n  const impressions = toNumber(base.impressions);\n\n  // Nếu có indicator dạng \"actions:<...>\" → lấy Results đúng theo actionKey\n  // Nếu indicator null/không hợp lệ → theo yêu cầu: trả 0\n  const results = indicator && actionKey ? resolveCount(base, actionKey) : 0;\n\n  out.push({\n    json: {\n      Date: base.date_start || base.date || '',\n      Campaign: base.campaign_name || '',\n      AdSet: base.adset_name || '',\n      Ad: base.ad_name || '',\n      Indicator: indicator,     // vd: \"actions:offsite_conversion.fb_pixel_purchase\"\n      ActionKey: actionKey,     // vd: \"offsite_conversion.fb_pixel_purchase\"\n      AmountSpent: Number(spend.toFixed(2)),\n      Results: results,         // nếu không có số đo → 0\n      CostPerResult: cpr != null ? Number(toNumber(cpr).toFixed(2)) : null,\n      Impressions: impressions\n    }\n  });\n}\n\nreturn out;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        520,
+        -100
+      ],
+      "id": "2fc6df61-ffcb-4b45-a819-970b46fc650f",
+      "name": "Build Results"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://parfumelite-dashboard.duongthien408.workers.dev/api/ingest/performance",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.all }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        920,
+        -100
+      ],
+      "id": "cf-ingest-performance",
+      "name": "POST to Cloudflare D1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Collect all items into single array for batch POST\nconst allData = items.map(item => item.json);\n\nreturn [{ json: { all: allData } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        720,
+        -100
+      ],
+      "id": "batch-collect",
+      "name": "Batch Collect"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Last day",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Last day": {
+      "main": [
+        [
+          {
+            "node": "FB Ads API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FB Ads API": {
+      "main": [
+        [
+          {
+            "node": "Filter Spent > 0",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Spent > 0": {
+      "main": [
+        [
+          {
+            "node": "Break Actions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Break Actions": {
+      "main": [
+        [
+          {
+            "node": "Extract CPR",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract CPR": {
+      "main": [
+        [
+          {
+            "node": "Build Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Results": {
+      "main": [
+        [
+          {
+            "node": "Batch Collect",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Batch Collect": {
+      "main": [
+        [
+          {
+            "node": "POST to Cloudflare D1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "cloudflare-v1",
+  "meta": {
+    "instanceId": "2461d2639d6072d1d3a5e2251b3a14ee5834f3407b65b48042ddf998ebd3a9c9"
+  },
+  "id": "parfumelite-cloudflare-daily",
+  "tags": []
+}

@@ -1,0 +1,224 @@
+{
+  "name": "Parfumelite_Region to Cloudflare",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 6,
+              "triggerAtMinute": 30
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -660,
+        20
+      ],
+      "id": "8abdc67f-1658-456a-9a9b-e3936cdf4290",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "from datetime import datetime, timedelta\n\nyesterday = datetime.utcnow() + timedelta(hours=7) - timedelta(days=1)\ndate_str = yesterday.strftime('%Y-%m-%d')\n\nreturn [{'json': {'since': date_str, 'until': date_str}}]"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -440,
+        20
+      ],
+      "id": "4f6c4799-5b87-4543-a0c2-e8c37c86e9cc",
+      "name": "Last Day"
+    },
+    {
+      "parameters": {
+        "url": "https://graph.facebook.com/v22.0/act_1214024666289319/insights",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "facebookGraphApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "level",
+              "value": "ad"
+            },
+            {
+              "name": "time_range",
+              "value": "={\"since\":\"{{ $json.since }}\",\"until\":\"{{ $json.until }}\"}"
+            },
+            {
+              "name": "breakdowns",
+              "value": "region"
+            },
+            {
+              "name": "limit",
+              "value": "1000"
+            },
+            {
+              "name": "fields",
+              "value": "campaign_name,ad_id,impressions,spend,cost_per_result,actions"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -260,
+        20
+      ],
+      "id": "a9300197-c630-4bb9-a30c-277fa307c4f6",
+      "name": "FB Ads Region",
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "w2ojdTqpdn5ZRYyD",
+          "name": "FB Ánh Vy"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "# Filter spend > 0\nall_ads = []\n\nfor item in items:\n    raw_data = item.json.get('data', [])\n    if raw_data:\n        for ad in raw_data:\n            spend = float(ad.get('spend', 0) or 0)\n            if spend > 0:\n                all_ads.append({'json': ad})\n\nreturn all_ads"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -60,
+        20
+      ],
+      "id": "f29af947-8246-4f72-aa1c-f35e430b9b41",
+      "name": "Spent > 0"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "# Transform data - Region breakdown\nfrom collections import defaultdict\n\ndef to_number(v):\n    if v is None:\n        return 0\n    try:\n        return float(str(v).replace(',', ''))\n    except:\n        return 0\n\ngrouped = defaultdict(lambda: {'Spend': 0, 'Impressions': 0})\n\nfor item in items:\n    d = item.json\n    \n    date = d.get('date_start', '')\n    campaign = d.get('campaign_name', 'Unknown')\n    region = d.get('region', 'Unknown')\n    \n    key = (date, campaign, region)\n    \n    grouped[key]['Spend'] += to_number(d.get('spend', 0))\n    grouped[key]['Impressions'] += to_number(d.get('impressions', 0))\n\nresults = []\nfor (date, campaign, region), values in grouped.items():\n    results.append({\n        'json': {\n            'Date': date,\n            'Campaign': campaign,\n            'Region': region,\n            'Spend': round(values['Spend'], 2),\n            'Impressions': int(values['Impressions'])\n        }\n    })\n\nresults.sort(key=lambda x: (x['json']['Date'], x['json']['Campaign'], x['json']['Region']))\n\nreturn results"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        160,
+        20
+      ],
+      "id": "aggregate-region",
+      "name": "Aggregate Data"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Collect all items into single array for batch POST\nconst allData = items.map(item => item.json);\n\nreturn [{ json: { all: allData } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        380,
+        20
+      ],
+      "id": "batch-collect-region",
+      "name": "Batch Collect"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://parfumelite-dashboard.duongthien408.workers.dev/api/ingest/regions",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.all }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        580,
+        20
+      ],
+      "id": "cf-ingest-regions",
+      "name": "POST to Cloudflare D1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Last Day",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Last Day": {
+      "main": [
+        [
+          {
+            "node": "FB Ads Region",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FB Ads Region": {
+      "main": [
+        [
+          {
+            "node": "Spent > 0",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Spent > 0": {
+      "main": [
+        [
+          {
+            "node": "Aggregate Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate Data": {
+      "main": [
+        [
+          {
+            "node": "Batch Collect",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Batch Collect": {
+      "main": [
+        [
+          {
+            "node": "POST to Cloudflare D1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "cloudflare-region-v1",
+  "meta": {
+    "instanceId": "2461d2639d6072d1d3a5e2251b3a14ee5834f3407b65b48042ddf998ebd3a9c9"
+  },
+  "id": "parfumelite-cloudflare-regions",
+  "tags": []
+}
