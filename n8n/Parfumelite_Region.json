@@ -1,0 +1,519 @@
+{
+  "name": "Parfumelite_Region",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 6,
+              "triggerAtMinute": 30
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -660,
+        20
+      ],
+      "id": "8abdc67f-1658-456a-9a9b-e3936cdf4290",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "https://graph.facebook.com/v22.0/act_1214024666289319/insights",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "facebookGraphApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "level",
+              "value": "ad"
+            },
+            {
+              "name": "time_range",
+              "value": "={\"since\":\"{{ $json.since }}\",\"until\":\"{{ $json.until }}\"}"
+            },
+            {
+              "name": "breakdowns",
+              "value": "region"
+            },
+            {
+              "name": "limit",
+              "value": "1000"
+            },
+            {
+              "name": "fields",
+              "value": "campaign_name,ad_id,impressions,spend,cost_per_result,actions"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -260,
+        20
+      ],
+      "id": "a9300197-c630-4bb9-a30c-277fa307c4f6",
+      "name": "FB Ads Region",
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "w2ojdTqpdn5ZRYyD",
+          "name": "FB Ánh Vy"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "from datetime import datetime, timedelta\n\nyesterday = datetime.utcnow() + timedelta(hours=7) - timedelta(days=1)\ndate_str = yesterday.strftime('%Y-%m-%d')\n\nreturn [{'json': {'since': date_str, 'until': date_str}}]"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -460,
+        20
+      ],
+      "id": "4f6c4799-5b87-4543-a0c2-e8c37c86e9cc",
+      "name": "Last Day1"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "# Filter spend > 0\nall_ads = []\n\nfor item in items:\n    raw_data = item.json.get('data', [])\n    if raw_data:\n        for ad in raw_data:\n            spend = float(ad.get('spend', 0) or 0)\n            if spend > 0:\n                all_ads.append({'json': ad})\n\nreturn all_ads"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -60,
+        20
+      ],
+      "id": "f29af947-8246-4f72-aa1c-f35e430b9b41",
+      "name": "Spent > "
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "# Transform data - Region breakdown\nresults = []\n\ndef to_number(v):\n    if v is None:\n        return 0\n    try:\n        return float(str(v).replace(',', ''))\n    except:\n        return 0\n\ndef get_action_key(cost_per_result):\n    if not cost_per_result:\n        return 'Unknown'\n    if isinstance(cost_per_result, list) and len(cost_per_result) > 0:\n        entry = cost_per_result[0]\n        indicator = entry.get('indicator', '')\n        if indicator and indicator.startswith('actions:'):\n            return indicator.split('actions:')[1]\n        elif indicator:\n            return indicator\n    return 'Unknown'\n\nfor item in items:\n    d = item.json\n    \n    spend = to_number(d.get('spend', 0))\n    impressions = int(to_number(d.get('impressions', 0)))\n    action_key = get_action_key(d.get('cost_per_result', []))\n    \n    results.append({\n        'json': {\n            'Date': d.get('date_start', ''),\n            'Campaign': d.get('campaign_name', ''),\n            'ActionKey': action_key,\n            'Region': d.get('region', 'Unknown'),\n            'Spend': round(spend, 2),\n            'Impressions': impressions\n        }\n    })\n\nreturn results"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        140,
+        20
+      ],
+      "id": "cfe609bc-1d9f-42c3-be40-8465d327d7c8",
+      "name": "Transform Data1"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "16ata6miFEMYRFa55bL6g6gv3f53TXhlKDWT6GYo2GHg",
+          "mode": "list",
+          "cachedResultName": "Parfumelite_Quickly Report",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/16ata6miFEMYRFa55bL6g6gv3f53TXhlKDWT6GYo2GHg/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 815060832,
+          "mode": "list",
+          "cachedResultName": "Region",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/16ata6miFEMYRFa55bL6g6gv3f53TXhlKDWT6GYo2GHg/edit#gid=815060832"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Campaign",
+              "displayName": "Campaign",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ActionKey",
+              "displayName": "ActionKey",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Region",
+              "displayName": "Region",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Spend",
+              "displayName": "Spend",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Impressions",
+              "displayName": "Impressions",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        400,
+        20
+      ],
+      "id": "64362b96-2189-462a-9bc0-d24decf10420",
+      "name": "Google Sheets1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "NRoflFtJt2RC1InM",
+          "name": "Google Sheets - Trang"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://graph.facebook.com/v22.0/act_1214024666289319/insights",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "facebookGraphApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "level",
+              "value": "ad"
+            },
+            {
+              "name": "time_range",
+              "value": "={\"since\":\"{{ $json.since }}\",\"until\":\"{{ $json.until }}\"}"
+            },
+            {
+              "name": "breakdowns",
+              "value": "region"
+            },
+            {
+              "name": "limit",
+              "value": "1000"
+            },
+            {
+              "name": "fields",
+              "value": "campaign_name,ad_id,impressions,spend,cost_per_result,actions"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -320,
+        220
+      ],
+      "id": "e5a98516-8c1c-435f-bfcb-0354df992e21",
+      "name": "FB Ads Region1",
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "w2ojdTqpdn5ZRYyD",
+          "name": "FB Ánh Vy"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "# Filter spend > 0\nall_ads = []\n\nfor item in items:\n    raw_data = item.json.get('data', [])\n    if raw_data:\n        for ad in raw_data:\n            spend = float(ad.get('spend', 0) or 0)\n            if spend > 0:\n                all_ads.append({'json': ad})\n\nreturn all_ads"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -120,
+        220
+      ],
+      "id": "247a291d-db9a-407b-b87d-949d9e9756fd",
+      "name": "Spent > 1"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "# Transform data - Region breakdown\nresults = []\n\ndef to_number(v):\n    if v is None:\n        return 0\n    try:\n        return float(str(v).replace(',', ''))\n    except:\n        return 0\n\ndef get_action_key(cost_per_result):\n    if not cost_per_result:\n        return 'Unknown'\n    if isinstance(cost_per_result, list) and len(cost_per_result) > 0:\n        entry = cost_per_result[0]\n        indicator = entry.get('indicator', '')\n        if indicator and indicator.startswith('actions:'):\n            return indicator.split('actions:')[1]\n        elif indicator:\n            return indicator\n    return 'Unknown'\n\nfor item in items:\n    d = item.json\n    \n    spend = to_number(d.get('spend', 0))\n    impressions = int(to_number(d.get('impressions', 0)))\n    action_key = get_action_key(d.get('cost_per_result', []))\n    \n    results.append({\n        'json': {\n            'Date': d.get('date_start', ''),\n            'Campaign': d.get('campaign_name', ''),\n            'ActionKey': action_key,\n            'Region': d.get('region', 'Unknown'),\n            'Spend': round(spend, 2),\n            'Impressions': impressions\n        }\n    })\n\nreturn results"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        80,
+        220
+      ],
+      "id": "5e9f2803-3d99-400c-9844-7db776d90850",
+      "name": "Transform Data2"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "16ata6miFEMYRFa55bL6g6gv3f53TXhlKDWT6GYo2GHg",
+          "mode": "list",
+          "cachedResultName": "Parfumelite_Quickly Report",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/16ata6miFEMYRFa55bL6g6gv3f53TXhlKDWT6GYo2GHg/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 815060832,
+          "mode": "list",
+          "cachedResultName": "Region",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/16ata6miFEMYRFa55bL6g6gv3f53TXhlKDWT6GYo2GHg/edit#gid=815060832"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Campaign",
+              "displayName": "Campaign",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ActionKey",
+              "displayName": "ActionKey",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Region",
+              "displayName": "Region",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Spend",
+              "displayName": "Spend",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Impressions",
+              "displayName": "Impressions",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        400,
+        220
+      ],
+      "id": "d68f94c1-60b3-4c3f-bf5b-ef9833c21f3e",
+      "name": "Google Sheets2",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "NRoflFtJt2RC1InM",
+          "name": "Google Sheets - Trang"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "from datetime import datetime, timedelta\n\n# Tạo danh sách các ngày từ 14/10/2025 đến 13/12/2025\nstart_date = datetime(2025, 10, 14)\nend_date = datetime(2025, 12, 13)\n\nresults = []\ncurrent_date = start_date\n\nwhile current_date <= end_date:\n    date_str = current_date.strftime('%Y-%m-%d')\n    results.append({\n        'json': {\n            'since': date_str,\n            'until': date_str\n        }\n    })\n    current_date += timedelta(days=1)\n\nreturn results"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -520,
+        220
+      ],
+      "id": "170c8bd4-3e71-41d8-8fb4-282c15230e03",
+      "name": "Khoảng ngày"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Last Day1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FB Ads Region": {
+      "main": [
+        [
+          {
+            "node": "Spent > ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Last Day1": {
+      "main": [
+        [
+          {
+            "node": "FB Ads Region",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Spent > ": {
+      "main": [
+        [
+          {
+            "node": "Transform Data1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transform Data1": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets1": {
+      "main": [
+        []
+      ]
+    },
+    "FB Ads Region1": {
+      "main": [
+        [
+          {
+            "node": "Spent > 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Spent > 1": {
+      "main": [
+        [
+          {
+            "node": "Transform Data2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transform Data2": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets2": {
+      "main": [
+        []
+      ]
+    },
+    "Khoảng ngày": {
+      "main": [
+        [
+          {
+            "node": "FB Ads Region1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "76c4acd2-3b70-4cb4-a0ef-0597daf00afb",
+  "meta": {
+    "instanceId": "2461d2639d6072d1d3a5e2251b3a14ee5834f3407b65b48042ddf998ebd3a9c9"
+  },
+  "id": "F9cbwDw507MfBppB",
+  "tags": []
+}
