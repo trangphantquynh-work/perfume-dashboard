@@ -1,0 +1,8 @@
+name = "perfume-dashboard"
+main = "worker.js"
+compatibility_date = "2024-12-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "perfume-dashboard"
+database_id = "1beb81d3-cac3-4919-a54d-b471d2214704"
