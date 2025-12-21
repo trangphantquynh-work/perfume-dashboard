@@ -76,7 +76,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -460,
+        -440,
         20
       ],
       "id": "4f6c4799-5b87-4543-a0c2-e8c37c86e9cc",
@@ -95,20 +95,6 @@
       ],
       "id": "f29af947-8246-4f72-aa1c-f35e430b9b41",
       "name": "Spent > "
-    },
-    {
-      "parameters": {
-        "language": "python",
-        "pythonCode": "# Transform data - Region breakdown\nresults = []\n\ndef to_number(v):\n    if v is None:\n        return 0\n    try:\n        return float(str(v).replace(',', ''))\n    except:\n        return 0\n\ndef get_action_key(cost_per_result):\n    if not cost_per_result:\n        return 'Unknown'\n    if isinstance(cost_per_result, list) and len(cost_per_result) > 0:\n        entry = cost_per_result[0]\n        indicator = entry.get('indicator', '')\n        if indicator and indicator.startswith('actions:'):\n            return indicator.split('actions:')[1]\n        elif indicator:\n            return indicator\n    return 'Unknown'\n\nfor item in items:\n    d = item.json\n    \n    spend = to_number(d.get('spend', 0))\n    impressions = int(to_number(d.get('impressions', 0)))\n    action_key = get_action_key(d.get('cost_per_result', []))\n    \n    results.append({\n        'json': {\n            'Date': d.get('date_start', ''),\n            'Campaign': d.get('campaign_name', ''),\n            'ActionKey': action_key,\n            'Region': d.get('region', 'Unknown'),\n            'Spend': round(spend, 2),\n            'Impressions': impressions\n        }\n    })\n\nreturn results"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        140,
-        20
-      ],
-      "id": "cfe609bc-1d9f-42c3-be40-8465d327d7c8",
-      "name": "Transform Data1"
     },
     {
       "parameters": {
@@ -195,7 +181,7 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.6,
       "position": [
-        400,
+        440,
         20
       ],
       "id": "64362b96-2189-462a-9bc0-d24decf10420",
@@ -387,11 +373,25 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -520,
-        220
+        -640,
+        440
       ],
       "id": "170c8bd4-3e71-41d8-8fb4-282c15230e03",
       "name": "Khoảng ngày"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "from collections import defaultdict\n\ndef to_number(v):\n    if v is None:\n        return 0\n    try:\n        return float(str(v).replace(',', ''))\n    except:\n        return 0\n\ngrouped = defaultdict(lambda: {'Spend': 0, 'Impressions': 0})\n\nfor item in items:\n    d = item.json\n    \n    date = d.get('date_start', '')\n    campaign = d.get('campaign_name', 'Unknown')\n    region = d.get('region', 'Unknown')\n    \n    key = (date, campaign, region)\n    \n    grouped[key]['Spend'] += to_number(d.get('spend', 0))\n    grouped[key]['Impressions'] += to_number(d.get('impressions', 0))\n\nresults = []\nfor (date, campaign, region), values in grouped.items():\n    results.append({\n        'json': {\n            'Date': date,\n            'Campaign': campaign,\n            'Region': region,\n            'Spend': round(values['Spend'], 2),\n            'Impressions': int(values['Impressions'])\n        }\n    })\n\nresults.sort(key=lambda x: (x['json']['Date'], x['json']['Campaign'], x['json']['Region']))\n\nreturn results"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        160,
+        20
+      ],
+      "id": "4dbf2522-5359-40fc-8873-f76c978365fe",
+      "name": "Aggregate Data"
     }
   ],
   "pinData": {},
@@ -433,18 +433,7 @@
       "main": [
         [
           {
-            "node": "Transform Data1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Transform Data1": {
-      "main": [
-        [
-          {
-            "node": "Google Sheets1",
+            "node": "Aggregate Data",
             "type": "main",
             "index": 0
           }
@@ -496,9 +485,14 @@
     },
     "Khoảng ngày": {
       "main": [
+        []
+      ]
+    },
+    "Aggregate Data": {
+      "main": [
         [
           {
-            "node": "FB Ads Region1",
+            "node": "Google Sheets1",
             "type": "main",
             "index": 0
           }
@@ -510,7 +504,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "76c4acd2-3b70-4cb4-a0ef-0597daf00afb",
+  "versionId": "90b7e506-58f4-496b-aa61-fa8841de8d49",
   "meta": {
     "instanceId": "2461d2639d6072d1d3a5e2251b3a14ee5834f3407b65b48042ddf998ebd3a9c9"
   },

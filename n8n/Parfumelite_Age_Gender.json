@@ -1,0 +1,293 @@
+{
+  "name": "Parfumelite_Age Gender",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 6,
+              "triggerAtMinute": 30
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -660,
+        -260
+      ],
+      "id": "6338f863-2b63-4d28-b528-948b223820b1",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "from datetime import datetime, timedelta\n\nyesterday = datetime.utcnow() + timedelta(hours=7) - timedelta(days=1)\ndate_str = yesterday.strftime('%Y-%m-%d')\n\nreturn [{'json': {'since': date_str, 'until': date_str}}]"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -460,
+        -260
+      ],
+      "id": "0351ab14-14cf-453a-aef4-bfacb562c280",
+      "name": "Last Day"
+    },
+    {
+      "parameters": {
+        "url": "https://graph.facebook.com/v22.0/act_1214024666289319/insights",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "facebookGraphApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "level",
+              "value": "ad"
+            },
+            {
+              "name": "time_range",
+              "value": "={\"since\":\"{{ $json.since }}\",\"until\":\"{{ $json.until }}\"}"
+            },
+            {
+              "name": "breakdowns",
+              "value": "age,gender"
+            },
+            {
+              "name": "limit",
+              "value": "1000"
+            },
+            {
+              "name": "fields",
+              "value": "campaign_name,ad_id,impressions,spend,cost_per_result,actions"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -260,
+        -260
+      ],
+      "id": "e4975360-82fb-4e8e-838f-c912776ec679",
+      "name": "FB Ads Age Gender",
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "w2ojdTqpdn5ZRYyD",
+          "name": "FB Ánh Vy"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "# Filter spend > 0\nall_ads = []\n\nfor item in items:\n    raw_data = item.json.get('data', [])\n    if raw_data:\n        for ad in raw_data:\n            spend = float(ad.get('spend', 0) or 0)\n            if spend > 0:\n                all_ads.append({'json': ad})\n\nreturn all_ads"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -60,
+        -260
+      ],
+      "id": "0e2f4fef-9eb8-4aeb-8163-2389c9bcc8ee",
+      "name": "Spent > 0"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "# Transform data - Age Gender breakdown\nresults = []\n\ndef to_number(v):\n    if v is None:\n        return 0\n    try:\n        return float(str(v).replace(',', ''))\n    except:\n        return 0\n\ndef get_action_key(cost_per_result):\n    if not cost_per_result:\n        return 'Unknown'\n    if isinstance(cost_per_result, list) and len(cost_per_result) > 0:\n        entry = cost_per_result[0]\n        indicator = entry.get('indicator', '')\n        if indicator and indicator.startswith('actions:'):\n            return indicator.split('actions:')[1]\n        elif indicator:\n            return indicator\n    return 'Unknown'\n\nfor item in items:\n    d = item.json\n    \n    spend = to_number(d.get('spend', 0))\n    impressions = int(to_number(d.get('impressions', 0)))\n    action_key = get_action_key(d.get('cost_per_result', []))\n    \n    results.append({\n        'json': {\n            'Date': d.get('date_start', ''),\n            'Campaign': d.get('campaign_name', ''),\n            'ActionKey': action_key,\n            'Age': d.get('age', 'Unknown'),\n            'Gender': d.get('gender', 'Unknown'),\n            'Spend': round(spend, 2),\n            'Impressions': impressions\n        }\n    })\n\nreturn results"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        140,
+        -260
+      ],
+      "id": "cd912148-0a4e-4da9-8b8d-3549f31116bb",
+      "name": "Transform Data"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "16ata6miFEMYRFa55bL6g6gv3f53TXhlKDWT6GYo2GHg",
+          "mode": "list",
+          "cachedResultName": "Parfumelite_Quickly Report",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/16ata6miFEMYRFa55bL6g6gv3f53TXhlKDWT6GYo2GHg/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 487135662,
+          "mode": "list",
+          "cachedResultName": "Age_Gender",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/16ata6miFEMYRFa55bL6g6gv3f53TXhlKDWT6GYo2GHg/edit#gid=487135662"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Campaign",
+              "displayName": "Campaign",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ActionKey",
+              "displayName": "ActionKey",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Age",
+              "displayName": "Age",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Gender",
+              "displayName": "Gender",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Spend",
+              "displayName": "Spend",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Impressions",
+              "displayName": "Impressions",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        360,
+        -260
+      ],
+      "id": "80568e89-b7e9-4a34-92a4-677facd7ee8f",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "NRoflFtJt2RC1InM",
+          "name": "Google Sheets - Trang"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Last Day",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Last Day": {
+      "main": [
+        [
+          {
+            "node": "FB Ads Age Gender",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FB Ads Age Gender": {
+      "main": [
+        [
+          {
+            "node": "Spent > 0",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Spent > 0": {
+      "main": [
+        [
+          {
+            "node": "Transform Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transform Data": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "0e1770b9-acae-4431-850a-4086093dc3b0",
+  "meta": {
+    "instanceId": "2461d2639d6072d1d3a5e2251b3a14ee5834f3407b65b48042ddf998ebd3a9c9"
+  },
+  "id": "Evnvpvgb2iHHWvdn",
+  "tags": []
+}
