@@ -28,6 +28,7 @@ export default {
         'GET /api/campaigns': () => getTopCampaigns(env, url.searchParams),
         'GET /api/demographics': () => getDemographics(env, url.searchParams),
         'GET /api/regions': () => getRegions(env, url.searchParams),
+        'GET /api/breakdown': () => getBreakdown(env, url.searchParams),
 
         // Data ingestion endpoints (for n8n)
         'POST /api/ingest/performance': () => ingestPerformance(env, request),
@@ -328,7 +329,7 @@ async function getRegions(env, params) {
   bindings.push(limit);
 
   const query = `
-    SELECT 
+    SELECT
       r.region_name,
       SUM(f.spend) as spend
     FROM fact_ads_regions f
@@ -342,6 +343,100 @@ async function getRegions(env, params) {
   try {
     const results = await db.prepare(query).bind(...bindings).all();
     return jsonResponse(results.results);
+  } catch (e) {
+    return jsonResponse({ error: e.message }, 500);
+  }
+}
+
+// Breakdown by Channel (FB/IG) and Objective (Mess/Impression/Visit)
+async function getBreakdown(env, params) {
+  const db = env.DB;
+
+  let startDate = params.get('startDate');
+  let endDate = params.get('endDate');
+
+  if (!startDate || !endDate) {
+    const end = new Date();
+    const start = new Date();
+    start.setDate(start.getDate() - 30);
+    endDate = end.toISOString().split('T')[0];
+    startDate = start.toISOString().split('T')[0];
+  }
+
+  const startKey = getDateKey(startDate);
+  const endKey = getDateKey(endDate);
+
+  // Extract platform from campaign name: "Impression FB" -> FB, "Mess IG" -> IG
+  // Objective: Impression, Message (Mess), Visit IG
+  const query = `
+    SELECT
+      c.campaign_name,
+      c.objective,
+      CASE
+        WHEN c.campaign_name LIKE '%FB%' OR c.campaign_name LIKE '%Facebook%' THEN 'Facebook'
+        WHEN c.campaign_name LIKE '%IG%' OR c.campaign_name LIKE '%Instagram%' THEN 'Instagram'
+        ELSE 'Other'
+      END as channel,
+      SUM(f.amount_spent) as total_spend,
+      SUM(f.impressions) as total_impressions,
+      SUM(f.results) as total_results,
+      SUM(f.amount_spent) / NULLIF(SUM(f.results), 0) as cpr,
+      (SUM(f.amount_spent) * 1000) / NULLIF(SUM(f.impressions), 0) as cpm
+    FROM fact_ads_performance f
+    JOIN dim_campaign c ON f.campaign_id = c.campaign_id
+    WHERE f.date_key BETWEEN ? AND ?
+    GROUP BY c.campaign_name, c.objective
+    ORDER BY total_spend DESC
+  `;
+
+  // Aggregate by Channel
+  const channelQuery = `
+    SELECT
+      CASE
+        WHEN c.campaign_name LIKE '%FB%' OR c.campaign_name LIKE '%Facebook%' THEN 'Facebook'
+        WHEN c.campaign_name LIKE '%IG%' OR c.campaign_name LIKE '%Instagram%' THEN 'Instagram'
+        ELSE 'Other'
+      END as channel,
+      SUM(f.amount_spent) as total_spend,
+      SUM(f.impressions) as total_impressions,
+      SUM(f.results) as total_results,
+      SUM(f.amount_spent) / NULLIF(SUM(f.results), 0) as cpr,
+      (SUM(f.amount_spent) * 1000) / NULLIF(SUM(f.impressions), 0) as cpm
+    FROM fact_ads_performance f
+    JOIN dim_campaign c ON f.campaign_id = c.campaign_id
+    WHERE f.date_key BETWEEN ? AND ?
+    GROUP BY channel
+    ORDER BY total_spend DESC
+  `;
+
+  // Aggregate by Objective
+  const objectiveQuery = `
+    SELECT
+      c.objective,
+      SUM(f.amount_spent) as total_spend,
+      SUM(f.impressions) as total_impressions,
+      SUM(f.results) as total_results,
+      SUM(f.amount_spent) / NULLIF(SUM(f.results), 0) as cpr,
+      (SUM(f.amount_spent) * 1000) / NULLIF(SUM(f.impressions), 0) as cpm
+    FROM fact_ads_performance f
+    JOIN dim_campaign c ON f.campaign_id = c.campaign_id
+    WHERE f.date_key BETWEEN ? AND ?
+    GROUP BY c.objective
+    ORDER BY total_spend DESC
+  `;
+
+  try {
+    const [campaignResults, channelResults, objectiveResults] = await Promise.all([
+      db.prepare(query).bind(startKey, endKey).all(),
+      db.prepare(channelQuery).bind(startKey, endKey).all(),
+      db.prepare(objectiveQuery).bind(startKey, endKey).all()
+    ]);
+
+    return jsonResponse({
+      by_campaign: campaignResults.results,
+      by_channel: channelResults.results,
+      by_objective: objectiveResults.results
+    });
   } catch (e) {
     return jsonResponse({ error: e.message }, 500);
   }
