@@ -208,18 +208,22 @@
                     <div class="text-center p-3 bg-slate-50 rounded-xl">
                         <p class="text-xs text-slate-500 mb-1">Chi tiêu</p>
                         <p class="text-lg font-bold text-slate-900" id="fb-spend">--</p>
+                        <p class="text-xs mt-1 hidden" id="fb-spend-change"></p>
                     </div>
                     <div class="text-center p-3 bg-slate-50 rounded-xl">
                         <p class="text-xs text-slate-500 mb-1">Impressions</p>
                         <p class="text-lg font-bold text-slate-900" id="fb-impressions">--</p>
+                        <p class="text-xs mt-1 hidden" id="fb-impressions-change"></p>
                     </div>
                     <div class="text-center p-3 bg-slate-50 rounded-xl">
                         <p class="text-xs text-slate-500 mb-1">Results</p>
                         <p class="text-lg font-bold text-slate-900" id="fb-results">--</p>
+                        <p class="text-xs mt-1 hidden" id="fb-results-change"></p>
                     </div>
                     <div class="text-center p-3 bg-slate-50 rounded-xl">
                         <p class="text-xs text-slate-500 mb-1">CPR</p>
                         <p class="text-lg font-bold text-slate-900" id="fb-cpr">--</p>
+                        <p class="text-xs mt-1 hidden" id="fb-cpr-change"></p>
                     </div>
                 </div>
             </div>
@@ -239,18 +243,22 @@
                     <div class="text-center p-3 bg-slate-50 rounded-xl">
                         <p class="text-xs text-slate-500 mb-1">Chi tiêu</p>
                         <p class="text-lg font-bold text-slate-900" id="ig-spend">--</p>
+                        <p class="text-xs mt-1 hidden" id="ig-spend-change"></p>
                     </div>
                     <div class="text-center p-3 bg-slate-50 rounded-xl">
                         <p class="text-xs text-slate-500 mb-1">Impressions</p>
                         <p class="text-lg font-bold text-slate-900" id="ig-impressions">--</p>
+                        <p class="text-xs mt-1 hidden" id="ig-impressions-change"></p>
                     </div>
                     <div class="text-center p-3 bg-slate-50 rounded-xl">
                         <p class="text-xs text-slate-500 mb-1">Results</p>
                         <p class="text-lg font-bold text-slate-900" id="ig-results">--</p>
+                        <p class="text-xs mt-1 hidden" id="ig-results-change"></p>
                     </div>
                     <div class="text-center p-3 bg-slate-50 rounded-xl">
                         <p class="text-xs text-slate-500 mb-1">CPR</p>
                         <p class="text-lg font-bold text-slate-900" id="ig-cpr">--</p>
+                        <p class="text-xs mt-1 hidden" id="ig-cpr-change"></p>
                     </div>
                 </div>
             </div>
@@ -283,19 +291,31 @@
                 <div class="space-y-3" id="mess-kpis">
                     <div class="flex justify-between items-center">
                         <span class="text-sm text-slate-500">Chi tiêu</span>
-                        <span class="font-bold text-slate-900" id="mess-spend">--</span>
+                        <div class="text-right">
+                            <span class="font-bold text-slate-900" id="mess-spend">--</span>
+                            <span class="text-xs ml-1 hidden" id="mess-spend-change"></span>
+                        </div>
                     </div>
                     <div class="flex justify-between items-center">
                         <span class="text-sm text-slate-500">Impressions</span>
-                        <span class="font-bold text-slate-900" id="mess-impressions">--</span>
+                        <div class="text-right">
+                            <span class="font-bold text-slate-900" id="mess-impressions">--</span>
+                            <span class="text-xs ml-1 hidden" id="mess-impressions-change"></span>
+                        </div>
                     </div>
                     <div class="flex justify-between items-center">
                         <span class="text-sm text-slate-500">Results</span>
-                        <span class="font-bold text-slate-900" id="mess-results">--</span>
+                        <div class="text-right">
+                            <span class="font-bold text-slate-900" id="mess-results">--</span>
+                            <span class="text-xs ml-1 hidden" id="mess-results-change"></span>
+                        </div>
                     </div>
                     <div class="flex justify-between items-center pt-2 border-t border-slate-100">
                         <span class="text-sm text-slate-500">CPR</span>
-                        <span class="font-bold text-purple-600" id="mess-cpr">--</span>
+                        <div class="text-right">
+                            <span class="font-bold text-purple-600" id="mess-cpr">--</span>
+                            <span class="text-xs ml-1 hidden" id="mess-cpr-change"></span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -314,19 +334,31 @@
                 <div class="space-y-3" id="impr-kpis">
                     <div class="flex justify-between items-center">
                         <span class="text-sm text-slate-500">Chi tiêu</span>
-                        <span class="font-bold text-slate-900" id="impr-spend">--</span>
+                        <div class="text-right">
+                            <span class="font-bold text-slate-900" id="impr-spend">--</span>
+                            <span class="text-xs ml-1 hidden" id="impr-spend-change"></span>
+                        </div>
                     </div>
                     <div class="flex justify-between items-center">
                         <span class="text-sm text-slate-500">Impressions</span>
-                        <span class="font-bold text-slate-900" id="impr-impressions">--</span>
+                        <div class="text-right">
+                            <span class="font-bold text-slate-900" id="impr-impressions">--</span>
+                            <span class="text-xs ml-1 hidden" id="impr-impressions-change"></span>
+                        </div>
                     </div>
                     <div class="flex justify-between items-center">
                         <span class="text-sm text-slate-500">Results</span>
-                        <span class="font-bold text-slate-900" id="impr-results">--</span>
+                        <div class="text-right">
+                            <span class="font-bold text-slate-900" id="impr-results">--</span>
+                            <span class="text-xs ml-1 hidden" id="impr-results-change"></span>
+                        </div>
                     </div>
                     <div class="flex justify-between items-center pt-2 border-t border-slate-100">
                         <span class="text-sm text-slate-500">CPM</span>
-                        <span class="font-bold text-teal-600" id="impr-cpm">--</span>
+                        <div class="text-right">
+                            <span class="font-bold text-teal-600" id="impr-cpm">--</span>
+                            <span class="text-xs ml-1 hidden" id="impr-cpm-change"></span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -345,19 +377,31 @@
                 <div class="space-y-3" id="visit-kpis">
                     <div class="flex justify-between items-center">
                         <span class="text-sm text-slate-500">Chi tiêu</span>
-                        <span class="font-bold text-slate-900" id="visit-spend">--</span>
+                        <div class="text-right">
+                            <span class="font-bold text-slate-900" id="visit-spend">--</span>
+                            <span class="text-xs ml-1 hidden" id="visit-spend-change"></span>
+                        </div>
                     </div>
                     <div class="flex justify-between items-center">
                         <span class="text-sm text-slate-500">Impressions</span>
-                        <span class="font-bold text-slate-900" id="visit-impressions">--</span>
+                        <div class="text-right">
+                            <span class="font-bold text-slate-900" id="visit-impressions">--</span>
+                            <span class="text-xs ml-1 hidden" id="visit-impressions-change"></span>
+                        </div>
                     </div>
                     <div class="flex justify-between items-center">
                         <span class="text-sm text-slate-500">Results</span>
-                        <span class="font-bold text-slate-900" id="visit-results">--</span>
+                        <div class="text-right">
+                            <span class="font-bold text-slate-900" id="visit-results">--</span>
+                            <span class="text-xs ml-1 hidden" id="visit-results-change"></span>
+                        </div>
                     </div>
                     <div class="flex justify-between items-center pt-2 border-t border-slate-100">
                         <span class="text-sm text-slate-500">CPR</span>
-                        <span class="font-bold text-amber-600" id="visit-cpr">--</span>
+                        <div class="text-right">
+                            <span class="font-bold text-amber-600" id="visit-cpr">--</span>
+                            <span class="text-xs ml-1 hidden" id="visit-cpr-change"></span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -564,11 +608,47 @@
             }
         }
 
+        // Calculate previous period dates
+        function getPreviousPeriod(startDate, endDate) {
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            const duration = end - start;
+
+            const prevEnd = new Date(start.getTime() - 86400000); // 1 day before start
+            const prevStart = new Date(prevEnd.getTime() - duration);
+
+            const fmt = d => {
+                const year = d.getFullYear();
+                const month = String(d.getMonth() + 1).padStart(2, '0');
+                const day = String(d.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            };
+
+            return { startDate: fmt(prevStart), endDate: fmt(prevEnd) };
+        }
+
+        // Fetch with custom dates (for comparison)
+        async function fetchDataWithDates(endpoint, startDate, endDate, params = {}) {
+            try {
+                const url = new URL(`${API_BASE}${endpoint}`);
+                url.searchParams.append('startDate', startDate);
+                url.searchParams.append('endDate', endDate);
+                Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+
+                const res = await fetch(url);
+                const json = await res.json();
+                return json.success ? json.data : null;
+            } catch (e) {
+                console.error("API Error", e);
+                return null;
+            }
+        }
+
         async function refreshData() {
             // Loading State
             document.body.style.cursor = 'wait';
 
-            // Parallel Fetch
+            // Parallel Fetch - current period
             const [overview, daily, campaigns, demo, regions, breakdown] = await Promise.all([
                 fetchData('/api/overview'),
                 fetchData('/api/daily'),
@@ -577,6 +657,13 @@
                 fetchData('/api/regions', { limit: 10 }),
                 fetchData('/api/breakdown')
             ]);
+
+            // Fetch comparison data if enabled
+            let comparisonBreakdown = null;
+            if (state.compare && state.startDate && state.endDate) {
+                const prevPeriod = getPreviousPeriod(state.startDate, state.endDate);
+                comparisonBreakdown = await fetchDataWithDates('/api/breakdown', prevPeriod.startDate, prevPeriod.endDate);
+            }
 
             // overview không còn dùng vì đã hiển thị theo Channel & Objective
             if (daily) updateTrendChart(daily);
@@ -587,8 +674,8 @@
             if (demo) updateDemoChart(demo);
             if (regions) updateRegionChart(regions);
             if (breakdown) {
-                updateChannelKPIs(breakdown.by_channel);
-                updateObjectiveKPIs(breakdown.by_objective);
+                updateChannelKPIs(breakdown.by_channel, comparisonBreakdown?.by_channel);
+                updateObjectiveKPIs(breakdown.by_objective, comparisonBreakdown?.by_objective);
                 updateChannelChart(breakdown.by_channel);
                 updateObjectiveChart(breakdown.by_objective);
                 updateBreakdownTable(breakdown.by_campaign);
@@ -600,10 +687,14 @@
         // --- UPDATERS ---
 
         // Update Channel KPIs (FB vs IG)
-        function updateChannelKPIs(data) {
+        function updateChannelKPIs(data, comparisonData) {
             // Find Facebook and Instagram data
             const fbData = data.find(d => d.channel === 'Facebook') || {};
             const igData = data.find(d => d.channel === 'Instagram') || {};
+
+            // Find comparison data
+            const fbPrev = comparisonData?.find(d => d.channel === 'Facebook') || {};
+            const igPrev = comparisonData?.find(d => d.channel === 'Instagram') || {};
 
             // Update Facebook KPIs
             document.getElementById('fb-spend').textContent = formatCurrency(fbData.total_spend || 0);
@@ -611,19 +702,36 @@
             document.getElementById('fb-results').textContent = formatNumber(fbData.total_results || 0);
             document.getElementById('fb-cpr').textContent = formatCurrency(fbData.cpr || 0);
 
+            // Update Facebook comparison
+            updateChangeEl('fb-spend-change', fbData.total_spend, fbPrev.total_spend);
+            updateChangeEl('fb-impressions-change', fbData.total_impressions, fbPrev.total_impressions);
+            updateChangeEl('fb-results-change', fbData.total_results, fbPrev.total_results);
+            updateChangeEl('fb-cpr-change', fbData.cpr, fbPrev.cpr, true); // inverse - lower CPR is better
+
             // Update Instagram KPIs
             document.getElementById('ig-spend').textContent = formatCurrency(igData.total_spend || 0);
             document.getElementById('ig-impressions').textContent = formatNumber(igData.total_impressions || 0);
             document.getElementById('ig-results').textContent = formatNumber(igData.total_results || 0);
             document.getElementById('ig-cpr').textContent = formatCurrency(igData.cpr || 0);
+
+            // Update Instagram comparison
+            updateChangeEl('ig-spend-change', igData.total_spend, igPrev.total_spend);
+            updateChangeEl('ig-impressions-change', igData.total_impressions, igPrev.total_impressions);
+            updateChangeEl('ig-results-change', igData.total_results, igPrev.total_results);
+            updateChangeEl('ig-cpr-change', igData.cpr, igPrev.cpr, true); // inverse
         }
 
         // Update Objective KPIs (Message / Impression / Visit)
-        function updateObjectiveKPIs(data) {
+        function updateObjectiveKPIs(data, comparisonData) {
             // Find each objective data
             const messData = data.find(d => d.objective === 'Message') || {};
             const imprData = data.find(d => d.objective === 'Impression') || {};
             const visitData = data.find(d => d.objective === 'Visit') || {};
+
+            // Find comparison data
+            const messPrev = comparisonData?.find(d => d.objective === 'Message') || {};
+            const imprPrev = comparisonData?.find(d => d.objective === 'Impression') || {};
+            const visitPrev = comparisonData?.find(d => d.objective === 'Visit') || {};
 
             // Update Message KPIs
             document.getElementById('mess-spend').textContent = formatCurrency(messData.total_spend || 0);
@@ -631,17 +739,35 @@
             document.getElementById('mess-results').textContent = formatNumber(messData.total_results || 0);
             document.getElementById('mess-cpr').textContent = formatCurrency(messData.cpr || 0);
 
+            // Update Message comparison
+            updateChangeEl('mess-spend-change', messData.total_spend, messPrev.total_spend);
+            updateChangeEl('mess-impressions-change', messData.total_impressions, messPrev.total_impressions);
+            updateChangeEl('mess-results-change', messData.total_results, messPrev.total_results);
+            updateChangeEl('mess-cpr-change', messData.cpr, messPrev.cpr, true);
+
             // Update Impression KPIs
             document.getElementById('impr-spend').textContent = formatCurrency(imprData.total_spend || 0);
             document.getElementById('impr-impressions').textContent = formatNumber(imprData.total_impressions || 0);
             document.getElementById('impr-results').textContent = formatNumber(imprData.total_results || 0);
             document.getElementById('impr-cpm').textContent = formatCurrency(imprData.cpm || 0);
 
+            // Update Impression comparison
+            updateChangeEl('impr-spend-change', imprData.total_spend, imprPrev.total_spend);
+            updateChangeEl('impr-impressions-change', imprData.total_impressions, imprPrev.total_impressions);
+            updateChangeEl('impr-results-change', imprData.total_results, imprPrev.total_results);
+            updateChangeEl('impr-cpm-change', imprData.cpm, imprPrev.cpm, true);
+
             // Update Visit KPIs
             document.getElementById('visit-spend').textContent = formatCurrency(visitData.total_spend || 0);
             document.getElementById('visit-impressions').textContent = formatNumber(visitData.total_impressions || 0);
             document.getElementById('visit-results').textContent = formatNumber(visitData.total_results || 0);
             document.getElementById('visit-cpr').textContent = formatCurrency(visitData.cpr || 0);
+
+            // Update Visit comparison
+            updateChangeEl('visit-spend-change', visitData.total_spend, visitPrev.total_spend);
+            updateChangeEl('visit-impressions-change', visitData.total_impressions, visitPrev.total_impressions);
+            updateChangeEl('visit-results-change', visitData.total_results, visitPrev.total_results);
+            updateChangeEl('visit-cpr-change', visitData.cpr, visitPrev.cpr, true);
         }
 
         function updateTable(data) {
@@ -927,6 +1053,39 @@
             const month = parseInt(parts[1], 10);
             const day = parseInt(parts[2], 10);
             return `${day}/${month}`;
+        }
+
+        // Calculate percentage change
+        function calcChange(current, previous) {
+            if (!previous || previous === 0) return null;
+            return ((current - previous) / previous) * 100;
+        }
+
+        // Format change badge
+        function formatChangeBadge(change, inverse = false) {
+            if (change === null) return '';
+            const isPositive = inverse ? change < 0 : change > 0;
+            const arrow = change > 0 ? '↑' : '↓';
+            const colorClass = isPositive ? 'text-green-600' : 'text-red-500';
+            return `<span class="${colorClass}">${arrow} ${Math.abs(change).toFixed(1)}%</span>`;
+        }
+
+        // Update change element
+        function updateChangeEl(elementId, current, previous, inverse = false) {
+            const el = document.getElementById(elementId);
+            if (!el) return;
+
+            if (state.compare && previous !== undefined) {
+                const change = calcChange(current, previous);
+                if (change !== null) {
+                    el.innerHTML = formatChangeBadge(change, inverse);
+                    el.classList.remove('hidden');
+                } else {
+                    el.classList.add('hidden');
+                }
+            } else {
+                el.classList.add('hidden');
+            }
         }
 
         // --- INIT & EVENTS ---
