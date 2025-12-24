@@ -191,74 +191,85 @@
             </div>
         </div>
 
-        <!-- Channel KPI Cards -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 fade-in-up delay-100">
-            <!-- Facebook Card -->
-            <div class="glass-card rounded-2xl p-6 border-l-4 border-blue-500">
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="w-12 h-12 rounded-xl bg-blue-500 flex items-center justify-center">
-                        <i class="ph-fill ph-facebook-logo text-2xl text-white"></i>
+        <!-- Channel Summary Card -->
+        <div class="glass-card rounded-2xl p-6 fade-in-up delay-100">
+            <!-- Row 1: Chi tiêu -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                <!-- Tổng chi tiêu -->
+                <div class="text-center p-4 bg-gradient-to-br from-slate-50 to-slate-100 rounded-xl">
+                    <div class="flex items-center justify-center gap-2 mb-2">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-pink-500 flex items-center justify-center">
+                            <i class="ph-fill ph-currency-circle-dollar text-xl text-white"></i>
+                        </div>
                     </div>
-                    <div>
-                        <h3 class="font-bold text-lg text-slate-900">Facebook</h3>
-                        <p class="text-xs text-slate-500">Hiệu suất quảng cáo FB</p>
-                    </div>
+                    <p class="text-sm text-slate-500 mb-1">Tổng chi tiêu</p>
+                    <p class="text-2xl font-bold text-slate-900" id="channel-total-spend">--</p>
+                    <p class="text-xs mt-1 hidden" id="channel-total-spend-change"></p>
                 </div>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="fb-kpis">
-                    <div class="text-center p-3 bg-slate-50 rounded-xl">
-                        <p class="text-xs text-slate-500 mb-1">Chi tiêu</p>
-                        <p class="text-lg font-bold text-slate-900" id="fb-spend">--</p>
-                        <p class="text-xs mt-1 hidden" id="fb-spend-change"></p>
+
+                <!-- Chi tiêu Facebook -->
+                <div class="text-center p-4 bg-blue-50 rounded-xl border border-blue-100">
+                    <div class="flex items-center justify-center gap-2 mb-2">
+                        <div class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center">
+                            <i class="ph-fill ph-facebook-logo text-xl text-white"></i>
+                        </div>
                     </div>
-                    <div class="text-center p-3 bg-slate-50 rounded-xl">
-                        <p class="text-xs text-slate-500 mb-1">Impressions</p>
-                        <p class="text-lg font-bold text-slate-900" id="fb-impressions">--</p>
-                        <p class="text-xs mt-1 hidden" id="fb-impressions-change"></p>
+                    <p class="text-sm text-slate-500 mb-1">Chi tiêu Facebook</p>
+                    <p class="text-2xl font-bold text-blue-600" id="fb-spend">--</p>
+                    <p class="text-xs mt-1 hidden" id="fb-spend-change"></p>
+                </div>
+
+                <!-- Chi tiêu Instagram -->
+                <div class="text-center p-4 bg-pink-50 rounded-xl border border-pink-100">
+                    <div class="flex items-center justify-center gap-2 mb-2">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-purple-500 via-pink-500 to-orange-400 flex items-center justify-center">
+                            <i class="ph-fill ph-instagram-logo text-xl text-white"></i>
+                        </div>
                     </div>
-                    <div class="text-center p-3 bg-slate-50 rounded-xl">
-                        <p class="text-xs text-slate-500 mb-1">Results</p>
-                        <p class="text-lg font-bold text-slate-900" id="fb-results">--</p>
-                        <p class="text-xs mt-1 hidden" id="fb-results-change"></p>
-                    </div>
-                    <div class="text-center p-3 bg-slate-50 rounded-xl">
-                        <p class="text-xs text-slate-500 mb-1">CPR</p>
-                        <p class="text-lg font-bold text-slate-900" id="fb-cpr">--</p>
-                        <p class="text-xs mt-1 hidden" id="fb-cpr-change"></p>
-                    </div>
+                    <p class="text-sm text-slate-500 mb-1">Chi tiêu Instagram</p>
+                    <p class="text-2xl font-bold text-pink-600" id="ig-spend">--</p>
+                    <p class="text-xs mt-1 hidden" id="ig-spend-change"></p>
                 </div>
             </div>
 
-            <!-- Instagram Card -->
-            <div class="glass-card rounded-2xl p-6 border-l-4 border-pink-500">
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="w-12 h-12 rounded-xl bg-gradient-to-tr from-purple-500 via-pink-500 to-orange-400 flex items-center justify-center">
-                        <i class="ph-fill ph-instagram-logo text-2xl text-white"></i>
+            <!-- Divider -->
+            <div class="border-t border-slate-200 my-4"></div>
+
+            <!-- Row 2: Kết quả -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Tổng tin nhắn -->
+                <div class="flex items-center gap-4 p-4 bg-purple-50 rounded-xl border border-purple-100">
+                    <div class="w-12 h-12 rounded-xl bg-purple-500 flex items-center justify-center flex-shrink-0">
+                        <i class="ph-fill ph-chat-circle-dots text-2xl text-white"></i>
                     </div>
                     <div>
-                        <h3 class="font-bold text-lg text-slate-900">Instagram</h3>
-                        <p class="text-xs text-slate-500">Hiệu suất quảng cáo IG</p>
+                        <p class="text-sm text-slate-500">Tin nhắn</p>
+                        <p class="text-xl font-bold text-purple-600" id="channel-total-messages">--</p>
+                        <p class="text-xs hidden" id="channel-total-messages-change"></p>
                     </div>
                 </div>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="ig-kpis">
-                    <div class="text-center p-3 bg-slate-50 rounded-xl">
-                        <p class="text-xs text-slate-500 mb-1">Chi tiêu</p>
-                        <p class="text-lg font-bold text-slate-900" id="ig-spend">--</p>
-                        <p class="text-xs mt-1 hidden" id="ig-spend-change"></p>
+
+                <!-- Tổng hiển thị -->
+                <div class="flex items-center gap-4 p-4 bg-teal-50 rounded-xl border border-teal-100">
+                    <div class="w-12 h-12 rounded-xl bg-teal-500 flex items-center justify-center flex-shrink-0">
+                        <i class="ph-fill ph-eye text-2xl text-white"></i>
                     </div>
-                    <div class="text-center p-3 bg-slate-50 rounded-xl">
-                        <p class="text-xs text-slate-500 mb-1">Impressions</p>
-                        <p class="text-lg font-bold text-slate-900" id="ig-impressions">--</p>
-                        <p class="text-xs mt-1 hidden" id="ig-impressions-change"></p>
+                    <div>
+                        <p class="text-sm text-slate-500">Lượt hiển thị</p>
+                        <p class="text-xl font-bold text-teal-600" id="channel-total-impressions">--</p>
+                        <p class="text-xs hidden" id="channel-total-impressions-change"></p>
                     </div>
-                    <div class="text-center p-3 bg-slate-50 rounded-xl">
-                        <p class="text-xs text-slate-500 mb-1">Results</p>
-                        <p class="text-lg font-bold text-slate-900" id="ig-results">--</p>
-                        <p class="text-xs mt-1 hidden" id="ig-results-change"></p>
+                </div>
+
+                <!-- Visit Profile -->
+                <div class="flex items-center gap-4 p-4 bg-amber-50 rounded-xl border border-amber-100">
+                    <div class="w-12 h-12 rounded-xl bg-amber-500 flex items-center justify-center flex-shrink-0">
+                        <i class="ph-fill ph-user-focus text-2xl text-white"></i>
                     </div>
-                    <div class="text-center p-3 bg-slate-50 rounded-xl">
-                        <p class="text-xs text-slate-500 mb-1">CPR</p>
-                        <p class="text-lg font-bold text-slate-900" id="ig-cpr">--</p>
-                        <p class="text-xs mt-1 hidden" id="ig-cpr-change"></p>
+                    <div>
+                        <p class="text-sm text-slate-500">Visit Profile IG</p>
+                        <p class="text-xl font-bold text-amber-600" id="channel-total-visits">--</p>
+                        <p class="text-xs hidden" id="channel-total-visits-change"></p>
                     </div>
                 </div>
             </div>
@@ -674,7 +685,7 @@
             if (demo) updateDemoChart(demo);
             if (regions) updateRegionChart(regions);
             if (breakdown) {
-                updateChannelKPIs(breakdown.by_channel, comparisonBreakdown?.by_channel);
+                updateChannelKPIs(breakdown.by_channel, breakdown.by_objective, comparisonBreakdown?.by_channel, comparisonBreakdown?.by_objective);
                 updateObjectiveKPIs(breakdown.by_objective, comparisonBreakdown?.by_objective);
                 updateChannelChart(breakdown.by_channel);
                 updateObjectiveChart(breakdown.by_objective);
@@ -686,39 +697,51 @@
 
         // --- UPDATERS ---
 
-        // Update Channel KPIs (FB vs IG)
-        function updateChannelKPIs(data, comparisonData) {
+        // Update Channel KPIs (new 6 KPIs layout)
+        function updateChannelKPIs(channelData, objectiveData, compChannelData, compObjectiveData) {
             // Find Facebook and Instagram data
-            const fbData = data.find(d => d.channel === 'Facebook') || {};
-            const igData = data.find(d => d.channel === 'Instagram') || {};
+            const fbData = channelData.find(d => d.channel === 'Facebook') || {};
+            const igData = channelData.find(d => d.channel === 'Instagram') || {};
+
+            // Find objective data for messages and visits
+            const messData = objectiveData?.find(d => d.objective === 'Message') || {};
+            const visitData = objectiveData?.find(d => d.objective === 'Visit') || {};
 
             // Find comparison data
-            const fbPrev = comparisonData?.find(d => d.channel === 'Facebook') || {};
-            const igPrev = comparisonData?.find(d => d.channel === 'Instagram') || {};
+            const fbPrev = compChannelData?.find(d => d.channel === 'Facebook') || {};
+            const igPrev = compChannelData?.find(d => d.channel === 'Instagram') || {};
+            const messPrev = compObjectiveData?.find(d => d.objective === 'Message') || {};
+            const visitPrev = compObjectiveData?.find(d => d.objective === 'Visit') || {};
 
-            // Update Facebook KPIs
+            // Calculate totals
+            const totalSpend = (fbData.total_spend || 0) + (igData.total_spend || 0);
+            const totalImpressions = (fbData.total_impressions || 0) + (igData.total_impressions || 0);
+            const totalSpendPrev = (fbPrev.total_spend || 0) + (igPrev.total_spend || 0);
+            const totalImpressionsPrev = (fbPrev.total_impressions || 0) + (igPrev.total_impressions || 0);
+
+            // Update Total Spend
+            document.getElementById('channel-total-spend').textContent = formatCurrency(totalSpend);
+            updateChangeEl('channel-total-spend-change', totalSpend, totalSpendPrev);
+
+            // Update Facebook Spend
             document.getElementById('fb-spend').textContent = formatCurrency(fbData.total_spend || 0);
-            document.getElementById('fb-impressions').textContent = formatNumber(fbData.total_impressions || 0);
-            document.getElementById('fb-results').textContent = formatNumber(fbData.total_results || 0);
-            document.getElementById('fb-cpr').textContent = formatCurrency(fbData.cpr || 0);
-
-            // Update Facebook comparison
             updateChangeEl('fb-spend-change', fbData.total_spend, fbPrev.total_spend);
-            updateChangeEl('fb-impressions-change', fbData.total_impressions, fbPrev.total_impressions);
-            updateChangeEl('fb-results-change', fbData.total_results, fbPrev.total_results);
-            updateChangeEl('fb-cpr-change', fbData.cpr, fbPrev.cpr, true); // inverse - lower CPR is better
 
-            // Update Instagram KPIs
+            // Update Instagram Spend
             document.getElementById('ig-spend').textContent = formatCurrency(igData.total_spend || 0);
-            document.getElementById('ig-impressions').textContent = formatNumber(igData.total_impressions || 0);
-            document.getElementById('ig-results').textContent = formatNumber(igData.total_results || 0);
-            document.getElementById('ig-cpr').textContent = formatCurrency(igData.cpr || 0);
-
-            // Update Instagram comparison
             updateChangeEl('ig-spend-change', igData.total_spend, igPrev.total_spend);
-            updateChangeEl('ig-impressions-change', igData.total_impressions, igPrev.total_impressions);
-            updateChangeEl('ig-results-change', igData.total_results, igPrev.total_results);
-            updateChangeEl('ig-cpr-change', igData.cpr, igPrev.cpr, true); // inverse
+
+            // Update Total Messages (from Message objective results)
+            document.getElementById('channel-total-messages').textContent = formatNumber(messData.total_results || 0);
+            updateChangeEl('channel-total-messages-change', messData.total_results, messPrev.total_results);
+
+            // Update Total Impressions
+            document.getElementById('channel-total-impressions').textContent = formatNumber(totalImpressions);
+            updateChangeEl('channel-total-impressions-change', totalImpressions, totalImpressionsPrev);
+
+            // Update Total Visit Profile (from Visit objective results)
+            document.getElementById('channel-total-visits').textContent = formatNumber(visitData.total_results || 0);
+            updateChangeEl('channel-total-visits-change', visitData.total_results, visitPrev.total_results);
         }
 
         // Update Objective KPIs (Message / Impression / Visit)
