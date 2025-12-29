@@ -472,37 +472,21 @@
             </div>
         </div>
 
-        <!-- 4. Trend Charts Area -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 fade-in-up delay-300">
-            <!-- Trend Chart -->
-            <div class="lg:col-span-2 glass-card rounded-2xl p-6">
+        <!-- 5. Trend Charts Area -->
+        <div class="fade-in-up delay-300">
+            <!-- Product Daily Messages Chart -->
+            <div class="glass-card rounded-2xl p-6">
                 <div class="flex items-center justify-between mb-6">
                     <div>
-                        <h3 class="font-bold text-slate-900">Xu hướng chi tiêu</h3>
-                        <p class="text-xs text-slate-500">Chi tiêu vs. Hiển thị theo ngày</p>
+                        <h3 class="font-bold text-slate-900">Tin nhắn theo Product Line</h3>
+                        <p class="text-xs text-slate-500">Top 5 sản phẩm có tin nhắn Facebook cao nhất theo ngày</p>
                     </div>
-                    <div class="flex gap-4">
-                        <div class="flex items-center gap-2 text-xs text-slate-600">
-                            <span class="w-2 h-2 rounded-full bg-brand-500"></span> Chi tiêu
-                        </div>
-                        <div class="flex items-center gap-2 text-xs text-slate-600">
-                            <span class="w-2 h-2 rounded-full bg-accent-blue opacity-50"></span> Impressions
-                        </div>
+                    <div id="productLegend" class="flex flex-wrap gap-3">
+                        <!-- Legend will be populated dynamically -->
                     </div>
                 </div>
                 <div class="chart-container">
-                    <canvas id="chartTrend"></canvas>
-                </div>
-            </div>
-
-            <!-- Campaign Donut -->
-            <div class="glass-card rounded-2xl p-6">
-                <div class="mb-6">
-                    <h3 class="font-bold text-slate-900">Top Chiến dịch</h3>
-                    <p class="text-xs text-slate-500">Phân bổ ngân sách theo campaign</p>
-                </div>
-                <div class="chart-container" style="height: 280px;">
-                    <canvas id="chartCampaigns"></canvas>
+                    <canvas id="chartProductDaily"></canvas>
                 </div>
             </div>
         </div>
@@ -534,33 +518,169 @@
             </div>
         </div>
 
-        <!-- 4. Data Table -->
-        <div class="glass-card rounded-2xl overflow-hidden fade-in-up delay-400">
-            <div class="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
-                <h3 class="font-bold text-slate-900">Chi tiết chiến dịch</h3>
-                <button
-                    class="text-brand-600 hover:text-brand-700 text-sm font-medium flex items-center gap-1 transition-colors">
-                    Export CSV <i class="ph ph-download-simple"></i>
-                </button>
+        <!-- 4. Top Posts Rankings -->
+        <div class="fade-in-up delay-400">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-1 h-8 bg-gradient-to-b from-rose-500 to-orange-500 rounded-full"></div>
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900">Top Bài Post</h2>
+                    <p class="text-slate-500 text-sm">Xếp hạng theo hiệu suất chuyển đổi</p>
+                </div>
             </div>
-            <div class="overflow-x-auto">
-                <table class="w-full text-sm text-left">
-                    <thead class="text-xs text-slate-500 uppercase bg-slate-50/50 font-semibold">
-                        <tr>
-                            <th class="px-6 py-3">Campaign Name</th>
-                            <th class="px-6 py-3 text-right">Chi tiêu</th>
-                            <th class="px-6 py-3 text-right">Impressions</th>
-                            <th class="px-6 py-3 text-right">Results</th>
-                            <th class="px-6 py-3 text-right">CPR</th>
-                            <th class="px-6 py-3 text-right">CPM</th>
-                        </tr>
-                    </thead>
-                    <tbody id="campaignTable" class="divide-y divide-slate-100">
-                        <tr>
-                            <td colspan="6" class="px-6 py-8 text-center text-slate-400">Đang tải dữ liệu...</td>
-                        </tr>
-                    </tbody>
-                </table>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 fade-in-up delay-400">
+            <!-- Top Messages FB -->
+            <div class="glass-card rounded-2xl overflow-hidden">
+                <div class="px-5 py-4 border-b border-slate-100 bg-blue-50/50">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-lg bg-blue-500 flex items-center justify-center">
+                            <i class="ph-fill ph-facebook-logo text-white"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-900">Top Tin nhắn FB</h3>
+                            <p class="text-xs text-slate-500">Chuyển đổi tin nhắn Facebook cao nhất</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <div id="topMessagesFB" class="space-y-3">
+                        <div class="text-center text-slate-400 py-4">Đang tải...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Messages IG -->
+            <div class="glass-card rounded-2xl overflow-hidden">
+                <div class="px-5 py-4 border-b border-slate-100 bg-pink-50/50">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-purple-500 via-pink-500 to-orange-400 flex items-center justify-center">
+                            <i class="ph-fill ph-instagram-logo text-white"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-900">Top Tin nhắn IG</h3>
+                            <p class="text-xs text-slate-500">Chuyển đổi tin nhắn Instagram cao nhất</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <div id="topMessagesIG" class="space-y-3">
+                        <div class="text-center text-slate-400 py-4">Đang tải...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Impressions -->
+            <div class="glass-card rounded-2xl overflow-hidden">
+                <div class="px-5 py-4 border-b border-slate-100 bg-teal-50/50">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-lg bg-teal-500 flex items-center justify-center">
+                            <i class="ph-fill ph-eye text-white"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-900">Top Hiển thị</h3>
+                            <p class="text-xs text-slate-500">Lượt hiển thị cao nhất</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <div id="topImpressions" class="space-y-3">
+                        <div class="text-center text-slate-400 py-4">Đang tải...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Visit IG -->
+            <div class="glass-card rounded-2xl overflow-hidden">
+                <div class="px-5 py-4 border-b border-slate-100 bg-amber-50/50">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-lg bg-amber-500 flex items-center justify-center">
+                            <i class="ph-fill ph-user-focus text-white"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-900">Top Visit Profile IG</h3>
+                            <p class="text-xs text-slate-500">Lượt ghé thăm profile Instagram cao nhất</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <div id="topVisitIG" class="space-y-3">
+                        <div class="text-center text-slate-400 py-4">Đang tải...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== SECTION: TOP PRODUCT PERFORMANCE ========== -->
+        <div class="fade-in-up delay-400 mt-8">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-1 h-8 bg-gradient-to-b from-emerald-500 to-cyan-500 rounded-full"></div>
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900">Top Performance theo Product Line</h2>
+                    <p class="text-slate-500 text-sm">Hiệu suất theo dòng sản phẩm</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 fade-in-up delay-400">
+            <!-- Top Message Products -->
+            <div class="glass-card rounded-2xl overflow-hidden">
+                <div class="px-5 py-4 border-b border-slate-100 bg-purple-50/50">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-lg bg-purple-500 flex items-center justify-center">
+                            <i class="ph-fill ph-chat-circle-dots text-white"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-900">Top Tin nhắn</h3>
+                            <p class="text-xs text-slate-500">Theo Product Line</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <div id="topMessageProducts" class="space-y-2">
+                        <div class="text-center text-slate-400 py-4">Đang tải...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Impression Products -->
+            <div class="glass-card rounded-2xl overflow-hidden">
+                <div class="px-5 py-4 border-b border-slate-100 bg-teal-50/50">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-lg bg-teal-500 flex items-center justify-center">
+                            <i class="ph-fill ph-eye text-white"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-900">Top Hiển thị</h3>
+                            <p class="text-xs text-slate-500">Theo Product Line</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <div id="topImpressionProducts" class="space-y-2">
+                        <div class="text-center text-slate-400 py-4">Đang tải...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Visit Products -->
+            <div class="glass-card rounded-2xl overflow-hidden">
+                <div class="px-5 py-4 border-b border-slate-100 bg-amber-50/50">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-lg bg-amber-500 flex items-center justify-center">
+                            <i class="ph-fill ph-user-focus text-white"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-900">Top Visit Profile</h3>
+                            <p class="text-xs text-slate-500">Theo Product Line</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <div id="topVisitProducts" class="space-y-2">
+                        <div class="text-center text-slate-400 py-4">Đang tải...</div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -656,43 +776,52 @@
         }
 
         async function refreshData() {
-            // Loading State
-            document.body.style.cursor = 'wait';
+            try {
+                // Loading State
+                document.body.style.cursor = 'wait';
+                console.log('Fetching data...', state);
 
-            // Parallel Fetch - current period
-            const [overview, daily, campaigns, demo, regions, breakdown] = await Promise.all([
-                fetchData('/api/overview'),
-                fetchData('/api/daily'),
-                fetchData('/api/campaigns', { limit: 5 }),
-                fetchData('/api/demographics'),
-                fetchData('/api/regions', { limit: 10 }),
-                fetchData('/api/breakdown')
-            ]);
+                // Parallel Fetch - current period
+                const [demo, regions, breakdown, topAds, topProducts, productDaily] = await Promise.all([
+                    fetchData('/api/demographics'),
+                    fetchData('/api/regions', { limit: 10 }),
+                    fetchData('/api/breakdown'),
+                    fetchData('/api/top-ads', { limit: 3 }),
+                    fetchData('/api/top-products', { limit: 5 }),
+                    fetchData('/api/product-daily', { limit: 5 })
+                ]);
 
-            // Fetch comparison data if enabled
-            let comparisonBreakdown = null;
-            if (state.compare && state.startDate && state.endDate) {
-                const prevPeriod = getPreviousPeriod(state.startDate, state.endDate);
-                comparisonBreakdown = await fetchDataWithDates('/api/breakdown', prevPeriod.startDate, prevPeriod.endDate);
+                console.log('Data fetched:', { breakdown, topAds, topProducts, productDaily });
+
+                // Fetch comparison data if enabled
+                let comparisonBreakdown = null;
+                if (state.compare && state.startDate && state.endDate) {
+                    const prevPeriod = getPreviousPeriod(state.startDate, state.endDate);
+                    comparisonBreakdown = await fetchDataWithDates('/api/breakdown', prevPeriod.startDate, prevPeriod.endDate);
+                }
+
+                if (productDaily) updateProductDailyChart(productDaily);
+                if (demo) updateDemoChart(demo);
+                if (regions) updateRegionChart(regions);
+                if (breakdown) {
+                    updateChannelKPIs(breakdown.by_channel, breakdown.by_objective, comparisonBreakdown?.by_channel, comparisonBreakdown?.by_objective);
+                    updateObjectiveKPIs(breakdown.by_objective, comparisonBreakdown?.by_objective);
+                    updateChannelChart(breakdown.by_channel);
+                    updateObjectiveChart(breakdown.by_objective);
+                    updateBreakdownTable(breakdown.by_campaign);
+                }
+                if (topAds) {
+                    updateTopAds(topAds);
+                }
+                if (topProducts) {
+                    updateTopProducts(topProducts);
+                }
+
+                document.body.style.cursor = 'default';
+            } catch (err) {
+                console.error('refreshData error:', err);
+                document.body.style.cursor = 'default';
             }
-
-            // overview không còn dùng vì đã hiển thị theo Channel & Objective
-            if (daily) updateTrendChart(daily);
-            if (campaigns) {
-                updateCampaignChart(campaigns);
-                updateTable(campaigns);
-            }
-            if (demo) updateDemoChart(demo);
-            if (regions) updateRegionChart(regions);
-            if (breakdown) {
-                updateChannelKPIs(breakdown.by_channel, breakdown.by_objective, comparisonBreakdown?.by_channel, comparisonBreakdown?.by_objective);
-                updateObjectiveKPIs(breakdown.by_objective, comparisonBreakdown?.by_objective);
-                updateChannelChart(breakdown.by_channel);
-                updateObjectiveChart(breakdown.by_objective);
-                updateBreakdownTable(breakdown.by_campaign);
-            }
-
-            document.body.style.cursor = 'default';
         }
 
         // --- UPDATERS ---
@@ -820,117 +949,179 @@
         Chart.defaults.color = '#64748b';
         Chart.defaults.scale.grid.color = '#f1f5f9';
 
-        function updateTrendChart(dataPayload) {
-            const ctx = document.getElementById('chartTrend').getContext('2d');
-            if (chartInstances.trend) chartInstances.trend.destroy();
+        function updateProductDailyChart(data) {
+            const ctx = document.getElementById('chartProductDaily').getContext('2d');
+            if (chartInstances.productDaily) chartInstances.productDaily.destroy();
 
-            // Handle Comparison structure vs Simple structure
-            let currentData = Array.isArray(dataPayload) ? dataPayload : dataPayload.current;
-            let comparisonData = (!Array.isArray(dataPayload) && dataPayload.comparison) ? dataPayload.comparison : null;
-
-            // Gradient Fill
-            const gradient = ctx.createLinearGradient(0, 0, 0, 300);
-            gradient.addColorStop(0, 'rgba(20, 184, 166, 0.2)');
-            gradient.addColorStop(1, 'rgba(20, 184, 166, 0)');
-
-            const datasets = [
-                {
-                    label: 'Chi tiêu (Kỳ này)',
-                    data: currentData.map(d => d.spend),
-                    borderColor: colors.teal,
-                    backgroundColor: gradient,
-                    borderWidth: 2,
-                    tension: 0.4,
-                    fill: true,
-                    yAxisID: 'y'
-                }
+            const productColors = [
+                '#14b8a6', // teal
+                '#8b5cf6', // purple
+                '#f59e0b', // amber
+                '#3b82f6', // blue
+                '#f43f5e'  // rose
             ];
 
-            if (comparisonData && state.compare) {
-                datasets.push({
-                    label: 'Chi tiêu (Kỳ trước)',
-                    data: comparisonData.map(d => d.spend),
-                    borderColor: colors.slate,
-                    borderWidth: 2,
-                    borderDash: [4, 4],
-                    tension: 0.4,
-                    pointRadius: 0,
-                    yAxisID: 'y'
-                });
+            // Create datasets from series
+            const datasets = data.series.map((s, i) => ({
+                label: s.name,
+                data: s.data,
+                borderColor: productColors[i % productColors.length],
+                backgroundColor: productColors[i % productColors.length] + '20',
+                borderWidth: 2,
+                tension: 0.4,
+                fill: false,
+                pointRadius: 3,
+                pointHoverRadius: 5
+            }));
+
+            // Update legend
+            const legendContainer = document.getElementById('productLegend');
+            if (legendContainer) {
+                legendContainer.innerHTML = data.series.map((s, i) => `
+                    <div class="flex items-center gap-2 text-xs text-slate-600">
+                        <span class="w-2 h-2 rounded-full" style="background-color: ${productColors[i % productColors.length]}"></span>
+                        ${s.name}
+                    </div>
+                `).join('');
             }
 
-            chartInstances.trend = new Chart(ctx, {
+            chartInstances.productDaily = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: currentData.map(d => formatDate(d.full_date)),
+                    labels: data.dates.map(d => formatDate(d)),
                     datasets: datasets
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     interaction: { mode: 'index', intersect: false },
-                    plugins: { legend: { display: state.compare } }, // Show legend only if comparing
-                    scales: {
-                        y: { type: 'linear', position: 'left', beginAtZero: true },
-                        x: { grid: { display: false } }
-                    }
-                }
-            });
-        }
-
-        function updateCampaignChart(data) {
-            const ctx = document.getElementById('chartCampaigns').getContext('2d');
-            if (chartInstances.campaigns) chartInstances.campaigns.destroy();
-
-            chartInstances.campaigns = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: data.map(d => d.campaign_name),
-                    datasets: [{
-                        data: data.map(d => d.total_spend),
-                        backgroundColor: colors.chartPalette,
-                        borderWidth: 0,
-                        hoverOffset: 10
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    cutout: '65%',
                     plugins: {
-                        legend: { position: 'right', labels: { boxWidth: 10, usePointStyle: true } }
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${formatNumber(context.raw)} tin nhắn`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            type: 'linear',
+                            position: 'left',
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return formatNumber(value);
+                                }
+                            }
+                        },
+                        x: { grid: { display: false } }
                     }
                 }
             });
         }
 
         function updateDemoChart(data) {
-            // Combine Age and Gender for a stacked bar or just show Age for simplicity in this demo
             const ctx = document.getElementById('chartDemographics').getContext('2d');
             if (chartInstances.demo) chartInstances.demo.destroy();
 
-            const ageData = data.by_age;
+            // Use by_age_gender for stacked bar chart
+            const ageGenderData = data.by_age_gender || [];
+
+            // Get unique age ranges (maintain order)
+            const ageRanges = [...new Set(ageGenderData.map(d => d.age_range))];
+
+            // Prepare data for each gender
+            const femaleData = ageRanges.map(age => {
+                const item = ageGenderData.find(d => d.age_range === age && d.gender === 'female');
+                return item ? item.spend : 0;
+            });
+
+            const maleData = ageRanges.map(age => {
+                const item = ageGenderData.find(d => d.age_range === age && d.gender === 'male');
+                return item ? item.spend : 0;
+            });
+
+            // Calculate percentages for each age group
+            const percentages = ageRanges.map((age, i) => {
+                const total = femaleData[i] + maleData[i];
+                return {
+                    female: total > 0 ? Math.round((femaleData[i] / total) * 100) : 0,
+                    male: total > 0 ? Math.round((maleData[i] / total) * 100) : 0
+                };
+            });
 
             chartInstances.demo = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: ageData.map(d => d.age_range),
-                    datasets: [{
-                        label: 'Chi tiêu',
-                        data: ageData.map(d => d.spend),
-                        backgroundColor: colors.purple,
-                        borderRadius: 6
-                    }]
+                    labels: ageRanges,
+                    datasets: [
+                        {
+                            label: 'Nữ',
+                            data: femaleData,
+                            backgroundColor: '#ec4899',
+                            borderRadius: 4,
+                            percentages: percentages.map(p => p.female)
+                        },
+                        {
+                            label: 'Nam',
+                            data: maleData,
+                            backgroundColor: '#3b82f6',
+                            borderRadius: 4,
+                            percentages: percentages.map(p => p.male)
+                        }
+                    ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: { boxWidth: 12, usePointStyle: true }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const value = context.raw;
+                                    const pct = context.dataset.percentages[context.dataIndex];
+                                    return `${context.dataset.label}: ${formatCurrency(value)} (${pct}%)`;
+                                }
+                            }
+                        }
+                    },
                     scales: {
-                        y: { beginAtZero: true },
-                        x: { grid: { display: false } }
+                        y: { beginAtZero: true, stacked: true },
+                        x: { grid: { display: false }, stacked: true }
                     }
-                }
+                },
+                plugins: [{
+                    id: 'percentageLabels',
+                    afterDatasetsDraw: function(chart) {
+                        const ctx = chart.ctx;
+                        ctx.save();
+                        ctx.font = 'bold 11px Inter, sans-serif';
+                        ctx.textAlign = 'center';
+
+                        chart.data.datasets.forEach((dataset, datasetIndex) => {
+                            const meta = chart.getDatasetMeta(datasetIndex);
+                            meta.data.forEach((bar, index) => {
+                                const pct = dataset.percentages[index];
+                                if (pct > 8) { // Only show if > 8%
+                                    const barHeight = bar.height;
+                                    const x = bar.x;
+                                    const y = bar.y + barHeight / 2 + 4;
+
+                                    ctx.fillStyle = '#ffffff';
+                                    ctx.fillText(`${pct}%`, x, y);
+                                }
+                            });
+                        });
+                        ctx.restore();
+                    }
+                }]
             });
         }
 
@@ -1066,6 +1257,67 @@
             `).join('');
         }
 
+        // Update Top Ads Rankings
+        function updateTopAds(data) {
+            const renderTopList = (containerId, items, valueKey, valueLabel, colorClass) => {
+                const container = document.getElementById(containerId);
+                if (!items || items.length === 0) {
+                    container.innerHTML = '<div class="text-center text-slate-400 py-4">Không có dữ liệu</div>';
+                    return;
+                }
+
+                const medals = ['🥇', '🥈', '🥉'];
+
+                container.innerHTML = items.map((item, index) => `
+                    <div class="flex items-start gap-3 p-3 bg-slate-50 rounded-xl hover:bg-slate-100 transition-colors">
+                        <span class="text-xl">${medals[index] || (index + 1)}</span>
+                        <div class="flex-1 min-w-0">
+                            <p class="font-medium text-slate-900 text-sm truncate" title="${item.ad_name}">${item.ad_name}</p>
+                            <div class="flex items-center gap-3 mt-1">
+                                <span class="text-xs ${colorClass} font-bold">${formatNumber(item[valueKey])} ${valueLabel}</span>
+                                <span class="text-xs text-slate-400">${formatCurrency(item.total_spend)}</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            };
+
+            renderTopList('topMessagesFB', data.top_messages_fb, 'total_results', 'tin nhắn', 'text-blue-600');
+            renderTopList('topMessagesIG', data.top_messages_ig, 'total_results', 'tin nhắn', 'text-pink-600');
+            renderTopList('topImpressions', data.top_impressions, 'total_impressions', 'hiển thị', 'text-teal-600');
+            renderTopList('topVisitIG', data.top_visit_ig, 'total_results', 'visits', 'text-amber-600');
+        }
+
+        // Update Top Products Rankings
+        function updateTopProducts(data) {
+            const renderProductList = (containerId, items, valueLabel, colorClass) => {
+                const container = document.getElementById(containerId);
+                if (!items || items.length === 0) {
+                    container.innerHTML = '<div class="text-center text-slate-400 py-4">Không có dữ liệu</div>';
+                    return;
+                }
+
+                const medals = ['🥇', '🥈', '🥉', '4️⃣', '5️⃣'];
+
+                container.innerHTML = items.map((item, index) => `
+                    <div class="flex items-center gap-3 p-2 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors">
+                        <span class="text-lg">${medals[index] || (index + 1)}</span>
+                        <div class="flex-1 min-w-0">
+                            <p class="font-semibold text-slate-900 text-sm">${item.product_line}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-sm font-bold ${colorClass}">${formatNumber(item.total)}</p>
+                            <p class="text-xs text-slate-400">${formatCurrency(item.spend)}</p>
+                        </div>
+                    </div>
+                `).join('');
+            };
+
+            renderProductList('topMessageProducts', data.top_message_products, 'tin nhắn', 'text-purple-600');
+            renderProductList('topImpressionProducts', data.top_impression_products, 'hiển thị', 'text-teal-600');
+            renderProductList('topVisitProducts', data.top_visit_products, 'visits', 'text-amber-600');
+        }
+
         // --- FORMATTERS ---
         const formatCurrency = (val) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 }).format(val);
         const formatNumber = (val) => new Intl.NumberFormat('vi-VN').format(val);
@@ -1169,4 +1421,3 @@
 </body>
 
 </html>
-```

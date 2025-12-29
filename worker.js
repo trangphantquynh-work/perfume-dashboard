@@ -29,6 +29,9 @@ export default {
         'GET /api/demographics': () => getDemographics(env, url.searchParams),
         'GET /api/regions': () => getRegions(env, url.searchParams),
         'GET /api/breakdown': () => getBreakdown(env, url.searchParams),
+        'GET /api/top-ads': () => getTopAds(env, url.searchParams),
+        'GET /api/top-products': () => getTopProducts(env, url.searchParams),
+        'GET /api/product-daily': () => getProductDaily(env, url.searchParams),
 
         // Data ingestion endpoints (for n8n)
         'POST /api/ingest/performance': () => ingestPerformance(env, request),
@@ -279,7 +282,7 @@ async function getDemographics(env, params) {
 
   // Aggregate by Age Group
   const queryAge = `
-    SELECT 
+    SELECT
       a.age_range,
     SUM(f.spend) as spend,
     SUM(f.impressions) as impressions
@@ -292,7 +295,7 @@ async function getDemographics(env, params) {
 
   // By Gender
   const queryGender = `
-    SELECT 
+    SELECT
       g.gender,
     SUM(f.spend) as spend,
     SUM(f.impressions) as impressions
@@ -302,10 +305,30 @@ async function getDemographics(env, params) {
     GROUP BY g.gender_id, g.gender
     `;
 
+  // By Age + Gender (for stacked bar chart)
+  const queryAgeGender = `
+    SELECT
+      a.age_range,
+      g.gender,
+      SUM(f.spend) as spend,
+      SUM(f.impressions) as impressions
+    FROM fact_ads_demographics f
+    JOIN dim_age_group a ON f.age_id = a.age_id
+    JOIN dim_gender g ON f.gender_id = g.gender_id
+    ${whereClause}
+    GROUP BY a.age_range, g.gender
+    ORDER BY a.age_range ASC, g.gender ASC
+    `;
+
   try {
     const ageResults = await db.prepare(queryAge).bind(...bindings).all();
     const genderResults = await db.prepare(queryGender).bind(...bindings).all();
-    return jsonResponse({ by_age: ageResults.results, by_gender: genderResults.results });
+    const ageGenderResults = await db.prepare(queryAgeGender).bind(...bindings).all();
+    return jsonResponse({
+      by_age: ageResults.results,
+      by_gender: genderResults.results,
+      by_age_gender: ageGenderResults.results
+    });
   } catch (e) {
     return jsonResponse({ error: e.message }, 500);
   }
@@ -436,6 +459,315 @@ async function getBreakdown(env, params) {
       by_campaign: campaignResults.results,
       by_channel: channelResults.results,
       by_objective: objectiveResults.results
+    });
+  } catch (e) {
+    return jsonResponse({ error: e.message }, 500);
+  }
+}
+
+// Get Top Ads (Posts) by category
+async function getTopAds(env, params) {
+  const db = env.DB;
+  const limit = parseInt(params.get('limit')) || 3;
+
+  let startDate = params.get('startDate');
+  let endDate = params.get('endDate');
+
+  if (!startDate || !endDate) {
+    const end = new Date();
+    const start = new Date();
+    start.setDate(start.getDate() - 30);
+    endDate = end.toISOString().split('T')[0];
+    startDate = start.toISOString().split('T')[0];
+  }
+
+  const startKey = getDateKey(startDate);
+  const endKey = getDateKey(endDate);
+
+  // Top Messages FB
+  const topMessagesFB = `
+    SELECT f.ad_name, c.campaign_name, SUM(f.results) as total_results, SUM(f.amount_spent) as total_spend
+    FROM fact_ads_performance f
+    JOIN dim_campaign c ON f.campaign_id = c.campaign_id
+    WHERE f.date_key BETWEEN ? AND ?
+      AND (c.campaign_name LIKE '%FB%' OR c.campaign_name LIKE '%Facebook%')
+      AND (c.objective = 'Message' OR c.campaign_name LIKE '%Mess%')
+      AND f.ad_name IS NOT NULL AND f.ad_name != ''
+    GROUP BY f.ad_name ORDER BY total_results DESC LIMIT ?
+  `;
+
+  // Top Messages IG
+  const topMessagesIG = `
+    SELECT f.ad_name, c.campaign_name, SUM(f.results) as total_results, SUM(f.amount_spent) as total_spend
+    FROM fact_ads_performance f
+    JOIN dim_campaign c ON f.campaign_id = c.campaign_id
+    WHERE f.date_key BETWEEN ? AND ?
+      AND (c.campaign_name LIKE '%IG%' OR c.campaign_name LIKE '%Instagram%')
+      AND (c.objective = 'Message' OR c.campaign_name LIKE '%Mess%')
+      AND f.ad_name IS NOT NULL AND f.ad_name != ''
+    GROUP BY f.ad_name ORDER BY total_results DESC LIMIT ?
+  `;
+
+  // Top Impressions
+  const topImpressions = `
+    SELECT f.ad_name, c.campaign_name, SUM(f.impressions) as total_impressions, SUM(f.amount_spent) as total_spend
+    FROM fact_ads_performance f
+    JOIN dim_campaign c ON f.campaign_id = c.campaign_id
+    WHERE f.date_key BETWEEN ? AND ?
+      AND (c.objective = 'Impression' OR c.campaign_name LIKE '%Impression%')
+      AND f.ad_name IS NOT NULL AND f.ad_name != ''
+    GROUP BY f.ad_name ORDER BY total_impressions DESC LIMIT ?
+  `;
+
+  // Top Visit IG
+  const topVisitIG = `
+    SELECT f.ad_name, c.campaign_name, SUM(f.results) as total_results, SUM(f.amount_spent) as total_spend
+    FROM fact_ads_performance f
+    JOIN dim_campaign c ON f.campaign_id = c.campaign_id
+    WHERE f.date_key BETWEEN ? AND ?
+      AND (c.objective = 'Visit' OR c.campaign_name LIKE '%Visit%')
+      AND f.ad_name IS NOT NULL AND f.ad_name != ''
+    GROUP BY f.ad_name ORDER BY total_results DESC LIMIT ?
+  `;
+
+  try {
+    const [msgFB, msgIG, impressions, visitIG] = await Promise.all([
+      db.prepare(topMessagesFB).bind(startKey, endKey, limit).all(),
+      db.prepare(topMessagesIG).bind(startKey, endKey, limit).all(),
+      db.prepare(topImpressions).bind(startKey, endKey, limit).all(),
+      db.prepare(topVisitIG).bind(startKey, endKey, limit).all()
+    ]);
+
+    return jsonResponse({
+      top_messages_fb: msgFB.results,
+      top_messages_ig: msgIG.results,
+      top_impressions: impressions.results,
+      top_visit_ig: visitIG.results
+    });
+  } catch (e) {
+    return jsonResponse({ error: e.message }, 500);
+  }
+}
+
+// Get Top Products by performance (extract product line from ad_name)
+async function getTopProducts(env, params) {
+  const db = env.DB;
+  const limit = parseInt(params.get('limit')) || 5;
+
+  let startDate = params.get('startDate');
+  let endDate = params.get('endDate');
+
+  if (!startDate || !endDate) {
+    const end = new Date();
+    const start = new Date();
+    start.setDate(start.getDate() - 30);
+    endDate = end.toISOString().split('T')[0];
+    startDate = start.toISOString().split('T')[0];
+  }
+
+  const startKey = getDateKey(startDate);
+  const endKey = getDateKey(endDate);
+
+  // Known product lines with keywords (grouped by same product)
+  const productMapping = {
+    'DIRTY MILK': ['DIRTY MILK'],
+    'MATCHA': ['MATCHA'],
+    'LENGLINH': ['LENGLINH'],
+    'WHITE CRUSH': ['WHITE CRUSH'],
+    'CHOCO LOCO': ['CHOCO LOCO'],
+    'GOLD JUICE': ['GOLD JUICE'],
+    'EXTRAIT EXTREME': ['EXTRAIT'],
+    'MAISON DE AMALRIC': ['MAISON DE AMALRIC'],
+    'BLACK FRIDAY': ['BLACK FRIDAY'],
+    'CHRISTMAS': ['GIÁNG SINH', 'CHRISTMAS', 'LỄ HỘI', 'MÙA LỄ']
+  };
+
+  // Function to extract product line from ad_name
+  function extractProductLine(adName) {
+    if (!adName) return 'Mix Product';
+    const upperName = adName.toUpperCase();
+
+    for (const [productName, keywords] of Object.entries(productMapping)) {
+      for (const keyword of keywords) {
+        if (upperName.includes(keyword.toUpperCase())) {
+          return productName;
+        }
+      }
+    }
+    return 'Mix Product';
+  }
+
+  // Query all ads with their metrics
+  const queryMessages = `
+    SELECT f.ad_name, SUM(f.results) as total_results, SUM(f.amount_spent) as total_spend
+    FROM fact_ads_performance f
+    JOIN dim_campaign c ON f.campaign_id = c.campaign_id
+    WHERE f.date_key BETWEEN ? AND ?
+      AND (c.objective = 'Message' OR c.campaign_name LIKE '%Mess%')
+      AND f.ad_name IS NOT NULL AND f.ad_name != ''
+    GROUP BY f.ad_name
+    ORDER BY total_results DESC
+  `;
+
+  const queryImpressions = `
+    SELECT f.ad_name, SUM(f.impressions) as total_impressions, SUM(f.amount_spent) as total_spend
+    FROM fact_ads_performance f
+    JOIN dim_campaign c ON f.campaign_id = c.campaign_id
+    WHERE f.date_key BETWEEN ? AND ?
+      AND (c.objective = 'Impression' OR c.campaign_name LIKE '%Impression%')
+      AND f.ad_name IS NOT NULL AND f.ad_name != ''
+    GROUP BY f.ad_name
+    ORDER BY total_impressions DESC
+  `;
+
+  const queryVisits = `
+    SELECT f.ad_name, SUM(f.results) as total_results, SUM(f.amount_spent) as total_spend
+    FROM fact_ads_performance f
+    JOIN dim_campaign c ON f.campaign_id = c.campaign_id
+    WHERE f.date_key BETWEEN ? AND ?
+      AND (c.objective = 'Visit' OR c.campaign_name LIKE '%Visit%')
+      AND f.ad_name IS NOT NULL AND f.ad_name != ''
+    GROUP BY f.ad_name
+    ORDER BY total_results DESC
+  `;
+
+  try {
+    const [messagesRes, impressionsRes, visitsRes] = await Promise.all([
+      db.prepare(queryMessages).bind(startKey, endKey).all(),
+      db.prepare(queryImpressions).bind(startKey, endKey).all(),
+      db.prepare(queryVisits).bind(startKey, endKey).all()
+    ]);
+
+    // Aggregate by product line
+    function aggregateByProduct(data, valueKey) {
+      const productMap = {};
+      for (const row of data) {
+        const product = extractProductLine(row.ad_name);
+        if (!productMap[product]) {
+          productMap[product] = { product_line: product, total: 0, spend: 0 };
+        }
+        productMap[product].total += row[valueKey] || 0;
+        productMap[product].spend += row.total_spend || 0;
+      }
+      return Object.values(productMap)
+        .sort((a, b) => b.total - a.total)
+        .slice(0, limit);
+    }
+
+    const topMessageProducts = aggregateByProduct(messagesRes.results, 'total_results');
+    const topImpressionProducts = aggregateByProduct(impressionsRes.results, 'total_impressions');
+    const topVisitProducts = aggregateByProduct(visitsRes.results, 'total_results');
+
+    return jsonResponse({
+      top_message_products: topMessageProducts,
+      top_impression_products: topImpressionProducts,
+      top_visit_products: topVisitProducts
+    });
+  } catch (e) {
+    return jsonResponse({ error: e.message }, 500);
+  }
+}
+
+// Get daily messages by product line for Facebook
+async function getProductDaily(env, params) {
+  const db = env.DB;
+  const limit = parseInt(params.get('limit')) || 5;
+
+  let startDate = params.get('startDate');
+  let endDate = params.get('endDate');
+
+  if (!startDate || !endDate) {
+    const end = new Date();
+    const start = new Date();
+    start.setDate(start.getDate() - 30);
+    endDate = end.toISOString().split('T')[0];
+    startDate = start.toISOString().split('T')[0];
+  }
+
+  const startKey = getDateKey(startDate);
+  const endKey = getDateKey(endDate);
+
+  // Known product lines with keywords
+  const productMapping = {
+    'DIRTY MILK': ['DIRTY MILK'],
+    'MATCHA': ['MATCHA'],
+    'LENGLINH': ['LENGLINH'],
+    'WHITE CRUSH': ['WHITE CRUSH'],
+    'CHOCO LOCO': ['CHOCO LOCO'],
+    'GOLD JUICE': ['GOLD JUICE'],
+    'EXTRAIT EXTREME': ['EXTRAIT'],
+    'MAISON DE AMALRIC': ['MAISON DE AMALRIC'],
+    'BLACK FRIDAY': ['BLACK FRIDAY'],
+    'CHRISTMAS': ['GIÁNG SINH', 'CHRISTMAS', 'LỄ HỘI', 'MÙA LỄ']
+  };
+
+  function extractProductLine(adName) {
+    if (!adName) return 'Mix Product';
+    const upperName = adName.toUpperCase();
+    for (const [productName, keywords] of Object.entries(productMapping)) {
+      for (const keyword of keywords) {
+        if (upperName.includes(keyword.toUpperCase())) {
+          return productName;
+        }
+      }
+    }
+    return 'Mix Product';
+  }
+
+  // Query daily messages by ad for Facebook only
+  const query = `
+    SELECT d.full_date, f.ad_name, SUM(f.results) as total_results
+    FROM fact_ads_performance f
+    JOIN dim_date d ON f.date_key = d.date_key
+    JOIN dim_campaign c ON f.campaign_id = c.campaign_id
+    WHERE f.date_key BETWEEN ? AND ?
+      AND c.channel = 'Facebook'
+      AND (c.objective = 'Message' OR c.campaign_name LIKE '%Mess%')
+      AND f.ad_name IS NOT NULL AND f.ad_name != ''
+    GROUP BY d.full_date, f.ad_name
+    ORDER BY d.full_date ASC
+  `;
+
+  try {
+    const result = await db.prepare(query).bind(startKey, endKey).all();
+
+    // Get top 5 products by total messages
+    const productTotals = {};
+    for (const row of result.results) {
+      const product = extractProductLine(row.ad_name);
+      productTotals[product] = (productTotals[product] || 0) + (row.total_results || 0);
+    }
+
+    const topProducts = Object.entries(productTotals)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, limit)
+      .map(([name]) => name);
+
+    // Build daily data for each top product
+    const dateProductMap = {};
+    for (const row of result.results) {
+      const date = row.full_date;
+      const product = extractProductLine(row.ad_name);
+
+      if (!topProducts.includes(product)) continue;
+
+      if (!dateProductMap[date]) {
+        dateProductMap[date] = {};
+      }
+      dateProductMap[date][product] = (dateProductMap[date][product] || 0) + (row.total_results || 0);
+    }
+
+    // Convert to array format
+    const dates = Object.keys(dateProductMap).sort();
+    const series = topProducts.map(product => ({
+      name: product,
+      data: dates.map(date => dateProductMap[date][product] || 0)
+    }));
+
+    return jsonResponse({
+      dates,
+      series,
+      topProducts
     });
   } catch (e) {
     return jsonResponse({ error: e.message }, 500);
