@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi" class="scroll-smooth">
+<html lang="en" class="scroll-smooth">
 
 <head>
     <meta charset="UTF-8">
@@ -156,14 +156,14 @@
                         <div
                             class="relative w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand-500">
                         </div>
-                        <span class="ms-2 text-sm font-medium text-slate-600">So sánh</span>
+                        <span class="ms-2 text-sm font-medium text-slate-600">Compare</span>
                     </label>
 
                     <!-- Date Picker Button -->
                     <button id="datePickerBtn"
                         class="flex items-center gap-2 bg-white border border-slate-200 text-slate-700 px-4 py-2 rounded-xl text-sm font-medium hover:bg-slate-50 transition-all shadow-sm">
                         <i class="ph ph-calendar-blank text-lg"></i>
-                        <span id="dateText">30 ngày qua</span>
+                        <span id="dateText">Last 30 days</span>
                         <i class="ph ph-caret-down text-slate-400"></i>
                     </button>
 
@@ -185,7 +185,7 @@
             <div class="flex items-center gap-3 mb-4">
                 <div class="w-1 h-8 bg-gradient-to-b from-blue-500 to-pink-500 rounded-full"></div>
                 <div>
-                    <h2 class="text-xl font-bold text-slate-900">Theo Kênh (Channel)</h2>
+                    <h2 class="text-xl font-bold text-slate-900">By Channel</h2>
                     <p class="text-slate-500 text-sm">Facebook vs Instagram</p>
                 </div>
             </div>
@@ -202,7 +202,7 @@
                             <i class="ph-fill ph-currency-circle-dollar text-xl text-white"></i>
                         </div>
                     </div>
-                    <p class="text-sm text-slate-500 mb-1">Tổng chi tiêu</p>
+                    <p class="text-sm text-slate-500 mb-1">Total Spend</p>
                     <p class="text-2xl font-bold text-slate-900" id="channel-total-spend">--</p>
                     <p class="text-xs mt-1 hidden" id="channel-total-spend-change"></p>
                 </div>
@@ -214,7 +214,7 @@
                             <i class="ph-fill ph-facebook-logo text-xl text-white"></i>
                         </div>
                     </div>
-                    <p class="text-sm text-slate-500 mb-1">Chi tiêu Facebook</p>
+                    <p class="text-sm text-slate-500 mb-1">Facebook Spend</p>
                     <p class="text-2xl font-bold text-blue-600" id="fb-spend">--</p>
                     <p class="text-xs mt-1 hidden" id="fb-spend-change"></p>
                 </div>
@@ -226,7 +226,7 @@
                             <i class="ph-fill ph-instagram-logo text-xl text-white"></i>
                         </div>
                     </div>
-                    <p class="text-sm text-slate-500 mb-1">Chi tiêu Instagram</p>
+                    <p class="text-sm text-slate-500 mb-1">Instagram Spend</p>
                     <p class="text-2xl font-bold text-pink-600" id="ig-spend">--</p>
                     <p class="text-xs mt-1 hidden" id="ig-spend-change"></p>
                 </div>
@@ -243,7 +243,7 @@
                         <i class="ph-fill ph-chat-circle-dots text-2xl text-white"></i>
                     </div>
                     <div>
-                        <p class="text-sm text-slate-500">Tin nhắn</p>
+                        <p class="text-sm text-slate-500">Messages</p>
                         <p class="text-xl font-bold text-purple-600" id="channel-total-messages">--</p>
                         <p class="text-xs hidden" id="channel-total-messages-change"></p>
                     </div>
@@ -255,7 +255,7 @@
                         <i class="ph-fill ph-eye text-2xl text-white"></i>
                     </div>
                     <div>
-                        <p class="text-sm text-slate-500">Lượt hiển thị</p>
+                        <p class="text-sm text-slate-500">Impressions</p>
                         <p class="text-xl font-bold text-teal-600" id="channel-total-impressions">--</p>
                         <p class="text-xs hidden" id="channel-total-impressions-change"></p>
                     </div>
@@ -280,7 +280,7 @@
             <div class="flex items-center gap-3 mb-4">
                 <div class="w-1 h-8 bg-gradient-to-b from-purple-500 via-teal-500 to-amber-500 rounded-full"></div>
                 <div>
-                    <h2 class="text-xl font-bold text-slate-900">Theo Mục tiêu (Objective)</h2>
+                    <h2 class="text-xl font-bold text-slate-900">By Objective</h2>
                     <p class="text-slate-500 text-sm">Message / Impression / Visit IG</p>
                 </div>
             </div>
@@ -296,12 +296,12 @@
                     </div>
                     <div>
                         <h3 class="font-bold text-slate-900">Message</h3>
-                        <p class="text-xs text-slate-500">Tin nhắn</p>
+                        <p class="text-xs text-slate-500">Messages</p>
                     </div>
                 </div>
                 <div class="space-y-3" id="mess-kpis">
                     <div class="flex justify-between items-center">
-                        <span class="text-sm text-slate-500">Chi tiêu</span>
+                        <span class="text-sm text-slate-500">Spend</span>
                         <div class="text-right">
                             <span class="font-bold text-slate-900" id="mess-spend">--</span>
                             <span class="text-xs ml-1 hidden" id="mess-spend-change"></span>
@@ -339,12 +339,12 @@
                     </div>
                     <div>
                         <h3 class="font-bold text-slate-900">Impression</h3>
-                        <p class="text-xs text-slate-500">Hiển thị</p>
+                        <p class="text-xs text-slate-500">Display Ads</p>
                     </div>
                 </div>
                 <div class="space-y-3" id="impr-kpis">
                     <div class="flex justify-between items-center">
-                        <span class="text-sm text-slate-500">Chi tiêu</span>
+                        <span class="text-sm text-slate-500">Spend</span>
                         <div class="text-right">
                             <span class="font-bold text-slate-900" id="impr-spend">--</span>
                             <span class="text-xs ml-1 hidden" id="impr-spend-change"></span>
@@ -382,12 +382,12 @@
                     </div>
                     <div>
                         <h3 class="font-bold text-slate-900">Visit IG</h3>
-                        <p class="text-xs text-slate-500">Lượt truy cập IG</p>
+                        <p class="text-xs text-slate-500">Profile Visits</p>
                     </div>
                 </div>
                 <div class="space-y-3" id="visit-kpis">
                     <div class="flex justify-between items-center">
-                        <span class="text-sm text-slate-500">Chi tiêu</span>
+                        <span class="text-sm text-slate-500">Spend</span>
                         <div class="text-right">
                             <span class="font-bold text-slate-900" id="visit-spend">--</span>
                             <span class="text-xs ml-1 hidden" id="visit-spend-change"></span>
@@ -418,36 +418,11 @@
             </div>
         </div>
 
-        <!-- ========== SECTION 3: COMPARISON CHARTS ========== -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 fade-in-up delay-300 mt-10">
-            <!-- Channel Chart -->
-            <div class="glass-card rounded-2xl p-6">
-                <div class="mb-6">
-                    <h3 class="font-bold text-slate-900">So sánh Channel</h3>
-                    <p class="text-xs text-slate-500">Chi tiêu Facebook vs Instagram</p>
-                </div>
-                <div class="chart-container" style="height: 280px;">
-                    <canvas id="chartChannel"></canvas>
-                </div>
-            </div>
-
-            <!-- Objective Chart -->
-            <div class="glass-card rounded-2xl p-6">
-                <div class="mb-6">
-                    <h3 class="font-bold text-slate-900">So sánh Objective</h3>
-                    <p class="text-xs text-slate-500">Message / Impression / Visit</p>
-                </div>
-                <div class="chart-container" style="height: 280px;">
-                    <canvas id="chartObjective"></canvas>
-                </div>
-            </div>
-        </div>
-
         <!-- ========== SECTION 4: DETAILED TABLE ========== -->
         <div class="glass-card rounded-2xl overflow-hidden fade-in-up delay-400 mt-6">
             <div class="px-6 py-5 border-b border-slate-100">
-                <h3 class="font-bold text-slate-900">Chi tiết theo Campaign</h3>
-                <p class="text-xs text-slate-500 mt-1">Bảng phân tích chi tiết theo kênh và mục tiêu</p>
+                <h3 class="font-bold text-slate-900">Campaign Details</h3>
+                <p class="text-xs text-slate-500 mt-1">Detailed breakdown by channel and objective</p>
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full text-sm text-left">
@@ -456,7 +431,7 @@
                             <th class="px-6 py-3">Campaign</th>
                             <th class="px-6 py-3">Channel</th>
                             <th class="px-6 py-3">Objective</th>
-                            <th class="px-6 py-3 text-right">Chi tiêu</th>
+                            <th class="px-6 py-3 text-right">Spend</th>
                             <th class="px-6 py-3 text-right">Impressions</th>
                             <th class="px-6 py-3 text-right">Results</th>
                             <th class="px-6 py-3 text-right">CPR</th>
@@ -465,149 +440,10 @@
                     </thead>
                     <tbody id="breakdownTable" class="divide-y divide-slate-100">
                         <tr>
-                            <td colspan="8" class="px-6 py-8 text-center text-slate-400">Đang tải dữ liệu...</td>
+                            <td colspan="8" class="px-6 py-8 text-center text-slate-400">Loading data...</td>
                         </tr>
                     </tbody>
                 </table>
-            </div>
-        </div>
-
-        <!-- 5. Trend Charts Area -->
-        <div class="fade-in-up delay-300">
-            <!-- Product Daily Messages Chart -->
-            <div class="glass-card rounded-2xl p-6">
-                <div class="flex items-center justify-between mb-6">
-                    <div>
-                        <h3 class="font-bold text-slate-900">Tin nhắn theo Product Line</h3>
-                        <p class="text-xs text-slate-500">Top 5 sản phẩm có tin nhắn Facebook cao nhất theo ngày</p>
-                    </div>
-                    <div id="productLegend" class="flex flex-wrap gap-3">
-                        <!-- Legend will be populated dynamically -->
-                    </div>
-                </div>
-                <div class="chart-container">
-                    <canvas id="chartProductDaily"></canvas>
-                </div>
-            </div>
-        </div>
-
-        <!-- 3. Demographics & Region -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 fade-in-up delay-400">
-            <!-- Age & Gender -->
-            <div class="glass-card rounded-2xl p-6">
-                <div class="flex items-center justify-between mb-6">
-                    <h3 class="font-bold text-slate-900">Nhân khẩu học</h3>
-                    <div class="flex bg-slate-100 rounded-lg p-1 text-xs font-medium">
-                        <button class="px-3 py-1 bg-white rounded shadow-sm text-slate-800">Tuổi & Giới tính</button>
-                    </div>
-                </div>
-                <div class="chart-container">
-                    <canvas id="chartDemographics"></canvas>
-                </div>
-            </div>
-
-            <!-- Regions -->
-            <div class="glass-card rounded-2xl p-6">
-                <div class="mb-6">
-                    <h3 class="font-bold text-slate-900">Khu vực địa lý</h3>
-                    <p class="text-xs text-slate-500">Top tỉnh/thành phố chi tiêu cao nhất</p>
-                </div>
-                <div class="chart-container">
-                    <canvas id="chartRegions"></canvas>
-                </div>
-            </div>
-        </div>
-
-        <!-- 4. Top Posts Rankings -->
-        <div class="fade-in-up delay-400">
-            <div class="flex items-center gap-3 mb-4">
-                <div class="w-1 h-8 bg-gradient-to-b from-rose-500 to-orange-500 rounded-full"></div>
-                <div>
-                    <h2 class="text-xl font-bold text-slate-900">Top Bài Post</h2>
-                    <p class="text-slate-500 text-sm">Xếp hạng theo hiệu suất chuyển đổi</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 fade-in-up delay-400">
-            <!-- Top Messages FB -->
-            <div class="glass-card rounded-2xl overflow-hidden">
-                <div class="px-5 py-4 border-b border-slate-100 bg-blue-50/50">
-                    <div class="flex items-center gap-2">
-                        <div class="w-8 h-8 rounded-lg bg-blue-500 flex items-center justify-center">
-                            <i class="ph-fill ph-facebook-logo text-white"></i>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-slate-900">Top Tin nhắn FB</h3>
-                            <p class="text-xs text-slate-500">Chuyển đổi tin nhắn Facebook cao nhất</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="p-4">
-                    <div id="topMessagesFB" class="space-y-3">
-                        <div class="text-center text-slate-400 py-4">Đang tải...</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Top Messages IG -->
-            <div class="glass-card rounded-2xl overflow-hidden">
-                <div class="px-5 py-4 border-b border-slate-100 bg-pink-50/50">
-                    <div class="flex items-center gap-2">
-                        <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-purple-500 via-pink-500 to-orange-400 flex items-center justify-center">
-                            <i class="ph-fill ph-instagram-logo text-white"></i>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-slate-900">Top Tin nhắn IG</h3>
-                            <p class="text-xs text-slate-500">Chuyển đổi tin nhắn Instagram cao nhất</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="p-4">
-                    <div id="topMessagesIG" class="space-y-3">
-                        <div class="text-center text-slate-400 py-4">Đang tải...</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Top Impressions -->
-            <div class="glass-card rounded-2xl overflow-hidden">
-                <div class="px-5 py-4 border-b border-slate-100 bg-teal-50/50">
-                    <div class="flex items-center gap-2">
-                        <div class="w-8 h-8 rounded-lg bg-teal-500 flex items-center justify-center">
-                            <i class="ph-fill ph-eye text-white"></i>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-slate-900">Top Hiển thị</h3>
-                            <p class="text-xs text-slate-500">Lượt hiển thị cao nhất</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="p-4">
-                    <div id="topImpressions" class="space-y-3">
-                        <div class="text-center text-slate-400 py-4">Đang tải...</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Top Visit IG -->
-            <div class="glass-card rounded-2xl overflow-hidden">
-                <div class="px-5 py-4 border-b border-slate-100 bg-amber-50/50">
-                    <div class="flex items-center gap-2">
-                        <div class="w-8 h-8 rounded-lg bg-amber-500 flex items-center justify-center">
-                            <i class="ph-fill ph-user-focus text-white"></i>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-slate-900">Top Visit Profile IG</h3>
-                            <p class="text-xs text-slate-500">Lượt ghé thăm profile Instagram cao nhất</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="p-4">
-                    <div id="topVisitIG" class="space-y-3">
-                        <div class="text-center text-slate-400 py-4">Đang tải...</div>
-                    </div>
-                </div>
             </div>
         </div>
 
@@ -616,8 +452,8 @@
             <div class="flex items-center gap-3 mb-4">
                 <div class="w-1 h-8 bg-gradient-to-b from-emerald-500 to-cyan-500 rounded-full"></div>
                 <div>
-                    <h2 class="text-xl font-bold text-slate-900">Top Performance theo Product Line</h2>
-                    <p class="text-slate-500 text-sm">Hiệu suất theo dòng sản phẩm</p>
+                    <h2 class="text-xl font-bold text-slate-900">Top Performance by Product Line</h2>
+                    <p class="text-slate-500 text-sm">Performance by product line</p>
                 </div>
             </div>
         </div>
@@ -631,14 +467,14 @@
                             <i class="ph-fill ph-chat-circle-dots text-white"></i>
                         </div>
                         <div>
-                            <h3 class="font-bold text-slate-900">Top Tin nhắn</h3>
-                            <p class="text-xs text-slate-500">Theo Product Line</p>
+                            <h3 class="font-bold text-slate-900">Top Messages</h3>
+                            <p class="text-xs text-slate-500">By Product Line</p>
                         </div>
                     </div>
                 </div>
                 <div class="p-4">
                     <div id="topMessageProducts" class="space-y-2">
-                        <div class="text-center text-slate-400 py-4">Đang tải...</div>
+                        <div class="text-center text-slate-400 py-4">Loading...</div>
                     </div>
                 </div>
             </div>
@@ -651,14 +487,14 @@
                             <i class="ph-fill ph-eye text-white"></i>
                         </div>
                         <div>
-                            <h3 class="font-bold text-slate-900">Top Hiển thị</h3>
-                            <p class="text-xs text-slate-500">Theo Product Line</p>
+                            <h3 class="font-bold text-slate-900">Top Impressions</h3>
+                            <p class="text-xs text-slate-500">By Product Line</p>
                         </div>
                     </div>
                 </div>
                 <div class="p-4">
                     <div id="topImpressionProducts" class="space-y-2">
-                        <div class="text-center text-slate-400 py-4">Đang tải...</div>
+                        <div class="text-center text-slate-400 py-4">Loading...</div>
                     </div>
                 </div>
             </div>
@@ -672,14 +508,179 @@
                         </div>
                         <div>
                             <h3 class="font-bold text-slate-900">Top Visit Profile</h3>
-                            <p class="text-xs text-slate-500">Theo Product Line</p>
+                            <p class="text-xs text-slate-500">By Product Line</p>
                         </div>
                     </div>
                 </div>
                 <div class="p-4">
                     <div id="topVisitProducts" class="space-y-2">
-                        <div class="text-center text-slate-400 py-4">Đang tải...</div>
+                        <div class="text-center text-slate-400 py-4">Loading...</div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. Trend Charts Area -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 fade-in-up delay-300 mt-8">
+            <!-- FB Messages Chart -->
+            <div class="glass-card rounded-2xl p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h3 class="font-bold text-slate-900">FB Messages by Day</h3>
+                        <p class="text-xs text-slate-500">Click product to filter</p>
+                    </div>
+                </div>
+                <div id="productLegendFB" class="flex flex-wrap gap-2 mb-4">
+                    <!-- Legend will be populated dynamically -->
+                </div>
+                <div class="chart-container">
+                    <canvas id="chartProductDailyFB"></canvas>
+                </div>
+            </div>
+
+            <!-- IG Messages Chart -->
+            <div class="glass-card rounded-2xl p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h3 class="font-bold text-slate-900">IG Messages by Day</h3>
+                        <p class="text-xs text-slate-500">Click product to filter</p>
+                    </div>
+                </div>
+                <div id="productLegendIG" class="flex flex-wrap gap-2 mb-4">
+                    <!-- Legend will be populated dynamically -->
+                </div>
+                <div class="chart-container">
+                    <canvas id="chartProductDailyIG"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Top Posts Rankings -->
+        <div class="fade-in-up delay-400">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-1 h-8 bg-gradient-to-b from-rose-500 to-orange-500 rounded-full"></div>
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900">Top Posts</h2>
+                    <p class="text-slate-500 text-sm">Ranked by conversion performance</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 fade-in-up delay-400">
+            <!-- Top Messages FB -->
+            <div class="glass-card rounded-2xl overflow-hidden">
+                <div class="px-5 py-4 border-b border-slate-100 bg-blue-50/50">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-lg bg-blue-500 flex items-center justify-center">
+                            <i class="ph-fill ph-facebook-logo text-white"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-900">Top FB Messages</h3>
+                            <p class="text-xs text-slate-500">Highest Facebook message conversions</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <div id="topMessagesFB" class="space-y-3">
+                        <div class="text-center text-slate-400 py-4">Loading...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Messages IG -->
+            <div class="glass-card rounded-2xl overflow-hidden">
+                <div class="px-5 py-4 border-b border-slate-100 bg-pink-50/50">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-purple-500 via-pink-500 to-orange-400 flex items-center justify-center">
+                            <i class="ph-fill ph-instagram-logo text-white"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-900">Top IG Messages</h3>
+                            <p class="text-xs text-slate-500">Highest Instagram message conversions</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <div id="topMessagesIG" class="space-y-3">
+                        <div class="text-center text-slate-400 py-4">Loading...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Impressions -->
+            <div class="glass-card rounded-2xl overflow-hidden">
+                <div class="px-5 py-4 border-b border-slate-100 bg-teal-50/50">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-lg bg-teal-500 flex items-center justify-center">
+                            <i class="ph-fill ph-eye text-white"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-900">Top Impressions</h3>
+                            <p class="text-xs text-slate-500">Highest impression count</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <div id="topImpressions" class="space-y-3">
+                        <div class="text-center text-slate-400 py-4">Loading...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Visit IG -->
+            <div class="glass-card rounded-2xl overflow-hidden">
+                <div class="px-5 py-4 border-b border-slate-100 bg-amber-50/50">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-lg bg-amber-500 flex items-center justify-center">
+                            <i class="ph-fill ph-user-focus text-white"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-900">Top Visit Profile IG</h3>
+                            <p class="text-xs text-slate-500">Highest Instagram profile visits</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <div id="topVisitIG" class="space-y-3">
+                        <div class="text-center text-slate-400 py-4">Loading...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== SECTION: DEMOGRAPHIC ========== -->
+        <div class="fade-in-up delay-400 mt-8">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-1 h-8 bg-gradient-to-b from-blue-500 to-cyan-500 rounded-full"></div>
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900">Demographic</h2>
+                    <p class="text-slate-500 text-sm">Demographics and geographic analysis</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 fade-in-up delay-400">
+            <!-- Age & Gender -->
+            <div class="glass-card rounded-2xl p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="font-bold text-slate-900">Age & Gender</h3>
+                    <div class="flex bg-slate-100 rounded-lg p-1 text-xs font-medium">
+                        <button class="px-3 py-1 bg-white rounded shadow-sm text-slate-800">Age & Gender</button>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="chartDemographics"></canvas>
+                </div>
+            </div>
+
+            <!-- Regions -->
+            <div class="glass-card rounded-2xl p-6">
+                <div class="mb-6">
+                    <h3 class="font-bold text-slate-900">Geographic Regions</h3>
+                    <p class="text-xs text-slate-500">Top provinces/cities by spend</p>
+                </div>
+                <div class="chart-container">
+                    <canvas id="chartRegions"></canvas>
                 </div>
             </div>
         </div>
@@ -689,14 +690,14 @@
     <!-- Footer -->
     <footer class="mt-auto border-t border-slate-200 bg-white/50 backdrop-blur-sm">
         <div class="max-w-7xl mx-auto px-4 py-6 text-center text-xs text-slate-400">
-            <p>&copy; 2024 Parfumelite Analytics. Powered by Cloudflare D1 & Workers.</p>
+            <p>&copy; 2025 Parfumelite Analytics. Powered by Cloudflare D1 & Workers.</p>
         </div>
     </footer>
 
     <!-- Logic Script -->
     <script>
         // --- CONFIG & STATE ---
-        const API_BASE = 'https://parfumelite-dashboard.duongthien408.workers.dev'; // Worker API URL
+        const API_BASE = 'https://perfume-dashboard-api.duongthien408.workers.dev'; // Worker API URL
         let chartInstances = {};
 
         let state = {
@@ -782,16 +783,17 @@
                 console.log('Fetching data...', state);
 
                 // Parallel Fetch - current period
-                const [demo, regions, breakdown, topAds, topProducts, productDaily] = await Promise.all([
+                const [demo, regions, breakdown, topAds, topProducts, productDailyFB, productDailyIG] = await Promise.all([
                     fetchData('/api/demographics'),
                     fetchData('/api/regions', { limit: 10 }),
                     fetchData('/api/breakdown'),
                     fetchData('/api/top-ads', { limit: 3 }),
                     fetchData('/api/top-products', { limit: 5 }),
-                    fetchData('/api/product-daily', { limit: 5 })
+                    fetchData('/api/product-daily-fb', { limit: 5 }),
+                    fetchData('/api/product-daily-ig', { limit: 5 })
                 ]);
 
-                console.log('Data fetched:', { breakdown, topAds, topProducts, productDaily });
+                console.log('Data fetched:', { breakdown, topAds, topProducts, productDailyFB, productDailyIG });
 
                 // Fetch comparison data if enabled
                 let comparisonBreakdown = null;
@@ -800,15 +802,14 @@
                     comparisonBreakdown = await fetchDataWithDates('/api/breakdown', prevPeriod.startDate, prevPeriod.endDate);
                 }
 
-                if (productDaily) updateProductDailyChart(productDaily);
+                if (productDailyFB) updateProductDailyChart(productDailyFB, 'FB');
+                if (productDailyIG) updateProductDailyChart(productDailyIG, 'IG');
                 if (demo) updateDemoChart(demo);
                 if (regions) updateRegionChart(regions);
                 if (breakdown) {
                     updateChannelKPIs(breakdown.by_channel, breakdown.by_objective, comparisonBreakdown?.by_channel, comparisonBreakdown?.by_objective);
                     updateObjectiveKPIs(breakdown.by_objective, comparisonBreakdown?.by_objective);
-                    updateChannelChart(breakdown.by_channel);
-                    updateObjectiveChart(breakdown.by_objective);
-                    updateBreakdownTable(breakdown.by_campaign);
+                    updateBreakdownTable(breakdown.by_campaign, comparisonBreakdown?.by_campaign);
                 }
                 if (topAds) {
                     updateTopAds(topAds);
@@ -925,7 +926,7 @@
         function updateTable(data) {
             const tbody = document.getElementById('campaignTable');
             if (!data || data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-8 text-center text-slate-400">Không có dữ liệu</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-8 text-center text-slate-400">No data available</td></tr>';
                 return;
             }
             tbody.innerHTML = data.map(row => `
@@ -949,9 +950,35 @@
         Chart.defaults.color = '#64748b';
         Chart.defaults.scale.grid.color = '#f1f5f9';
 
-        function updateProductDailyChart(data) {
-            const ctx = document.getElementById('chartProductDaily').getContext('2d');
-            if (chartInstances.productDaily) chartInstances.productDaily.destroy();
+        // Store product visibility state for FB and IG
+        let productVisibilityFB = {};
+        let productVisibilityIG = {};
+
+        function updateProductDailyChart(data, channel = 'FB') {
+            console.log(`updateProductDailyChart ${channel} called with:`, data);
+
+            if (!data || !data.series || data.series.length === 0) {
+                console.log(`No data for product daily chart ${channel}`);
+                return;
+            }
+
+            // Get the right visibility object and elements based on channel
+            const visibility = channel === 'FB' ? productVisibilityFB : productVisibilityIG;
+            const canvasId = channel === 'FB' ? 'chartProductDailyFB' : 'chartProductDailyIG';
+            const legendId = channel === 'FB' ? 'productLegendFB' : 'productLegendIG';
+            const chartKey = channel === 'FB' ? 'productDailyFB' : 'productDailyIG';
+            const dataKey = channel === 'FB' ? 'productDailyDataFB' : 'productDailyDataIG';
+
+            // Store data globally for legend toggle
+            window[dataKey] = data;
+
+            // Initialize visibility (all visible by default)
+            if (Object.keys(visibility).length === 0) {
+                data.series.forEach(s => visibility[s.name] = true);
+            }
+
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            if (chartInstances[chartKey]) chartInstances[chartKey].destroy();
 
             const productColors = [
                 '#14b8a6', // teal
@@ -962,30 +989,37 @@
             ];
 
             // Create datasets from series
-            const datasets = data.series.map((s, i) => ({
-                label: s.name,
-                data: s.data,
-                borderColor: productColors[i % productColors.length],
-                backgroundColor: productColors[i % productColors.length] + '20',
-                borderWidth: 2,
-                tension: 0.4,
-                fill: false,
-                pointRadius: 3,
-                pointHoverRadius: 5
-            }));
+            const datasets = data.series
+                .map((s, i) => ({
+                    label: s.name,
+                    data: s.data,
+                    borderColor: productColors[i % productColors.length],
+                    backgroundColor: productColors[i % productColors.length] + '20',
+                    borderWidth: 2.5,
+                    tension: 0.4,
+                    fill: false,
+                    pointRadius: 0,
+                    pointHoverRadius: 4,
+                    hidden: !visibility[s.name],
+                    colorIndex: i
+                }));
 
-            // Update legend
-            const legendContainer = document.getElementById('productLegend');
+            // Update legend with clickable items
+            const legendContainer = document.getElementById(legendId);
             if (legendContainer) {
-                legendContainer.innerHTML = data.series.map((s, i) => `
-                    <div class="flex items-center gap-2 text-xs text-slate-600">
-                        <span class="w-2 h-2 rounded-full" style="background-color: ${productColors[i % productColors.length]}"></span>
-                        ${s.name}
+                legendContainer.innerHTML = data.series.map((s, i) => {
+                    const isActive = visibility[s.name];
+                    return `
+                    <div class="flex items-center gap-2 text-xs cursor-pointer select-none transition-opacity ${isActive ? 'opacity-100' : 'opacity-40'}"
+                         onclick="toggleProductLine('${s.name}', '${channel}')"
+                         title="Click to ${isActive ? 'hide' : 'show'} ${s.name}">
+                        <span class="w-3 h-3 rounded-full" style="background-color: ${productColors[i % productColors.length]}"></span>
+                        <span class="${isActive ? 'text-slate-700 font-medium' : 'text-slate-400'}">${s.name}</span>
                     </div>
-                `).join('');
+                `}).join('');
             }
 
-            chartInstances.productDaily = new Chart(ctx, {
+            chartInstances[chartKey] = new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: data.dates.map(d => formatDate(d)),
@@ -998,9 +1032,12 @@
                     plugins: {
                         legend: { display: false },
                         tooltip: {
+                            filter: function(tooltipItem) {
+                                return !tooltipItem.dataset.hidden;
+                            },
                             callbacks: {
                                 label: function(context) {
-                                    return `${context.dataset.label}: ${formatNumber(context.raw)} tin nhắn`;
+                                    return `${context.dataset.label}: ${formatNumber(context.raw)} messages`;
                                 }
                             }
                         }
@@ -1020,6 +1057,17 @@
                     }
                 }
             });
+        }
+
+        // Toggle product line visibility
+        function toggleProductLine(productName, channel = 'FB') {
+            const visibility = channel === 'FB' ? productVisibilityFB : productVisibilityIG;
+            const dataKey = channel === 'FB' ? 'productDailyDataFB' : 'productDailyDataIG';
+
+            visibility[productName] = !visibility[productName];
+            if (window[dataKey]) {
+                updateProductDailyChart(window[dataKey], channel);
+            }
         }
 
         function updateDemoChart(data) {
@@ -1058,14 +1106,14 @@
                     labels: ageRanges,
                     datasets: [
                         {
-                            label: 'Nữ',
+                            label: 'Female',
                             data: femaleData,
                             backgroundColor: '#ec4899',
                             borderRadius: 4,
                             percentages: percentages.map(p => p.female)
                         },
                         {
-                            label: 'Nam',
+                            label: 'Male',
                             data: maleData,
                             backgroundColor: '#3b82f6',
                             borderRadius: 4,
@@ -1134,7 +1182,7 @@
                 data: {
                     labels: data.map(d => d.region_name),
                     datasets: [{
-                        label: 'Chi tiêu',
+                        label: 'Spend',
                         data: data.map(d => d.spend),
                         backgroundColor: colors.amber,
                         borderRadius: 4,
@@ -1154,79 +1202,11 @@
             });
         }
 
-        // Channel Chart (FB vs IG)
-        function updateChannelChart(data) {
-            const ctx = document.getElementById('chartChannel').getContext('2d');
-            if (chartInstances.channel) chartInstances.channel.destroy();
-
-            const channelColors = {
-                'Facebook': '#1877F2',
-                'Instagram': '#E4405F',
-                'Other': '#64748b'
-            };
-
-            chartInstances.channel = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: data.map(d => d.channel),
-                    datasets: [{
-                        data: data.map(d => d.total_spend),
-                        backgroundColor: data.map(d => channelColors[d.channel] || colors.slate),
-                        borderWidth: 0,
-                        hoverOffset: 10
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    cutout: '60%',
-                    plugins: {
-                        legend: { position: 'bottom', labels: { boxWidth: 12, usePointStyle: true, padding: 15 } }
-                    }
-                }
-            });
-        }
-
-        // Objective Chart (Mess / Impression / Visit)
-        function updateObjectiveChart(data) {
-            const ctx = document.getElementById('chartObjective').getContext('2d');
-            if (chartInstances.objective) chartInstances.objective.destroy();
-
-            const objectiveColors = {
-                'Message': '#8b5cf6',
-                'Impression': '#14b8a6',
-                'Visit': '#f59e0b',
-                'Unknown': '#64748b'
-            };
-
-            chartInstances.objective = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: data.map(d => d.objective),
-                    datasets: [{
-                        label: 'Chi tiêu',
-                        data: data.map(d => d.total_spend),
-                        backgroundColor: data.map(d => objectiveColors[d.objective] || colors.slate),
-                        borderRadius: 8
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: { beginAtZero: true },
-                        x: { grid: { display: false } }
-                    }
-                }
-            });
-        }
-
-        // Breakdown Table
-        function updateBreakdownTable(data) {
+        // Breakdown Table with comparison
+        function updateBreakdownTable(data, comparisonData) {
             const tbody = document.getElementById('breakdownTable');
             if (!data || data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" class="px-6 py-8 text-center text-slate-400">Không có dữ liệu</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="8" class="px-6 py-8 text-center text-slate-400">No data available</td></tr>';
                 return;
             }
 
@@ -1243,18 +1223,45 @@
                 return '<span class="px-2 py-1 text-xs font-medium bg-slate-100 text-slate-700 rounded-full">' + obj + '</span>';
             };
 
-            tbody.innerHTML = data.map(row => `
+            // Helper to find comparison data by campaign name
+            const findComparison = (campaignName) => {
+                if (!comparisonData || !state.compare) return null;
+                return comparisonData.find(c => c.campaign_name === campaignName);
+            };
+
+            // Helper to render value with comparison
+            const renderWithComparison = (current, previous, isCurrency = false, invertColor = false) => {
+                const formattedValue = isCurrency ? formatCurrency(current || 0) : formatNumber(current || 0);
+                if (!previous || !state.compare) return formattedValue;
+
+                const change = previous > 0 ? ((current - previous) / previous * 100) : 0;
+                if (Math.abs(change) < 0.1) return formattedValue;
+
+                // For CPR/CPM, lower is better so invert the color
+                const isPositive = invertColor ? change < 0 : change > 0;
+                const colorClass = isPositive ? 'text-emerald-600' : 'text-rose-600';
+                const arrow = change > 0 ? '↑' : '↓';
+
+                return `
+                    <div>${formattedValue}</div>
+                    <div class="text-xs ${colorClass}">${arrow} ${Math.abs(change).toFixed(1)}%</div>
+                `;
+            };
+
+            tbody.innerHTML = data.map(row => {
+                const prev = findComparison(row.campaign_name);
+                return `
                 <tr class="hover:bg-slate-50 transition-colors">
                     <td class="px-6 py-4 font-medium text-slate-900">${row.campaign_name}</td>
                     <td class="px-6 py-4">${channelBadge(row.channel)}</td>
                     <td class="px-6 py-4">${objectiveBadge(row.objective)}</td>
-                    <td class="px-6 py-4 text-right tabular-nums font-medium">${formatCurrency(row.total_spend)}</td>
-                    <td class="px-6 py-4 text-right tabular-nums text-slate-600">${formatNumber(row.total_impressions)}</td>
-                    <td class="px-6 py-4 text-right tabular-nums text-slate-600">${formatNumber(row.total_results)}</td>
-                    <td class="px-6 py-4 text-right tabular-nums text-slate-600">${formatCurrency(row.cpr || 0)}</td>
-                    <td class="px-6 py-4 text-right tabular-nums text-slate-600">${formatCurrency(row.cpm || 0)}</td>
+                    <td class="px-6 py-4 text-right tabular-nums font-medium">${renderWithComparison(row.total_spend, prev?.total_spend, true)}</td>
+                    <td class="px-6 py-4 text-right tabular-nums text-slate-600">${renderWithComparison(row.total_impressions, prev?.total_impressions)}</td>
+                    <td class="px-6 py-4 text-right tabular-nums text-slate-600">${renderWithComparison(row.total_results, prev?.total_results)}</td>
+                    <td class="px-6 py-4 text-right tabular-nums text-slate-600">${renderWithComparison(row.cpr, prev?.cpr, true, true)}</td>
+                    <td class="px-6 py-4 text-right tabular-nums text-slate-600">${renderWithComparison(row.cpm, prev?.cpm, true, true)}</td>
                 </tr>
-            `).join('');
+            `}).join('');
         }
 
         // Update Top Ads Rankings
@@ -1262,7 +1269,7 @@
             const renderTopList = (containerId, items, valueKey, valueLabel, colorClass) => {
                 const container = document.getElementById(containerId);
                 if (!items || items.length === 0) {
-                    container.innerHTML = '<div class="text-center text-slate-400 py-4">Không có dữ liệu</div>';
+                    container.innerHTML = '<div class="text-center text-slate-400 py-4">No data available</div>';
                     return;
                 }
 
@@ -1282,9 +1289,9 @@
                 `).join('');
             };
 
-            renderTopList('topMessagesFB', data.top_messages_fb, 'total_results', 'tin nhắn', 'text-blue-600');
-            renderTopList('topMessagesIG', data.top_messages_ig, 'total_results', 'tin nhắn', 'text-pink-600');
-            renderTopList('topImpressions', data.top_impressions, 'total_impressions', 'hiển thị', 'text-teal-600');
+            renderTopList('topMessagesFB', data.top_messages_fb, 'total_results', 'messages', 'text-blue-600');
+            renderTopList('topMessagesIG', data.top_messages_ig, 'total_results', 'messages', 'text-pink-600');
+            renderTopList('topImpressions', data.top_impressions, 'total_impressions', 'impressions', 'text-teal-600');
             renderTopList('topVisitIG', data.top_visit_ig, 'total_results', 'visits', 'text-amber-600');
         }
 
@@ -1293,7 +1300,7 @@
             const renderProductList = (containerId, items, valueLabel, colorClass) => {
                 const container = document.getElementById(containerId);
                 if (!items || items.length === 0) {
-                    container.innerHTML = '<div class="text-center text-slate-400 py-4">Không có dữ liệu</div>';
+                    container.innerHTML = '<div class="text-center text-slate-400 py-4">No data available</div>';
                     return;
                 }
 
@@ -1313,8 +1320,8 @@
                 `).join('');
             };
 
-            renderProductList('topMessageProducts', data.top_message_products, 'tin nhắn', 'text-purple-600');
-            renderProductList('topImpressionProducts', data.top_impression_products, 'hiển thị', 'text-teal-600');
+            renderProductList('topMessageProducts', data.top_message_products, 'messages', 'text-purple-600');
+            renderProductList('topImpressionProducts', data.top_impression_products, 'impressions', 'text-teal-600');
             renderProductList('topVisitProducts', data.top_visit_products, 'visits', 'text-amber-600');
         }
 

@@ -31,7 +31,8 @@ export default {
         'GET /api/breakdown': () => getBreakdown(env, url.searchParams),
         'GET /api/top-ads': () => getTopAds(env, url.searchParams),
         'GET /api/top-products': () => getTopProducts(env, url.searchParams),
-        'GET /api/product-daily': () => getProductDaily(env, url.searchParams),
+        'GET /api/product-daily-fb': () => getProductDaily(env, url.searchParams, 'Facebook'),
+        'GET /api/product-daily-ig': () => getProductDaily(env, url.searchParams, 'Instagram'),
 
         // Data ingestion endpoints (for n8n)
         'POST /api/ingest/performance': () => ingestPerformance(env, request),
@@ -40,6 +41,7 @@ export default {
 
         // Utility
         'GET /api/health': () => healthCheck(env),
+        'POST /api/dedupe-regions': () => dedupeRegions(env),
         // 'GET /': () => serveDashboard(env), // Let fallback handle root
       };
 
@@ -668,8 +670,8 @@ async function getTopProducts(env, params) {
   }
 }
 
-// Get daily messages by product line for Facebook
-async function getProductDaily(env, params) {
+// Get daily messages by product line for Facebook or Instagram
+async function getProductDaily(env, params, channel = 'Facebook') {
   const db = env.DB;
   const limit = parseInt(params.get('limit')) || 5;
 
@@ -714,14 +716,19 @@ async function getProductDaily(env, params) {
     return 'Mix Product';
   }
 
-  // Query daily messages by ad for Facebook only
+  // Build channel filter based on parameter
+  const channelFilter = channel === 'Instagram'
+    ? "(c.campaign_name LIKE '%IG%' OR c.campaign_name LIKE '%Instagram%')"
+    : "(c.campaign_name LIKE '%FB%' OR c.campaign_name LIKE '%Facebook%')";
+
+  // Query daily messages by ad (channel derived from campaign_name)
   const query = `
     SELECT d.full_date, f.ad_name, SUM(f.results) as total_results
     FROM fact_ads_performance f
     JOIN dim_date d ON f.date_key = d.date_key
     JOIN dim_campaign c ON f.campaign_id = c.campaign_id
     WHERE f.date_key BETWEEN ? AND ?
-      AND c.channel = 'Facebook'
+      AND ${channelFilter}
       AND (c.objective = 'Message' OR c.campaign_name LIKE '%Mess%')
       AND f.ad_name IS NOT NULL AND f.ad_name != ''
     GROUP BY d.full_date, f.ad_name
@@ -909,6 +916,56 @@ async function ingestRegions(env, request) {
   }
 
   return jsonResponse({ processed, errors: errors.length > 0 ? errors : null });
+}
+
+// Deduplicate regions data
+async function dedupeRegions(env) {
+  const db = env.DB;
+
+  try {
+    // Count before
+    const beforeCount = await db.prepare('SELECT COUNT(*) as count FROM fact_ads_regions').first();
+
+    // Create temp table with unique records (sum spend for same date/campaign/region)
+    await db.prepare(`
+      CREATE TABLE IF NOT EXISTS fact_ads_regions_temp AS
+      SELECT
+        MIN(id) as id,
+        date_key,
+        campaign_id,
+        region_id,
+        SUM(spend) / COUNT(*) as spend,
+        SUM(impressions) / COUNT(*) as impressions,
+        MIN(created_at) as created_at
+      FROM fact_ads_regions
+      GROUP BY date_key, campaign_id, region_id
+    `).run();
+
+    // Delete all from original
+    await db.prepare('DELETE FROM fact_ads_regions').run();
+
+    // Copy back unique records
+    await db.prepare(`
+      INSERT INTO fact_ads_regions (date_key, campaign_id, region_id, spend, impressions, created_at)
+      SELECT date_key, campaign_id, region_id, spend, impressions, created_at
+      FROM fact_ads_regions_temp
+    `).run();
+
+    // Drop temp table
+    await db.prepare('DROP TABLE fact_ads_regions_temp').run();
+
+    // Count after
+    const afterCount = await db.prepare('SELECT COUNT(*) as count FROM fact_ads_regions').first();
+
+    return jsonResponse({
+      success: true,
+      before: beforeCount.count,
+      after: afterCount.count,
+      removed: beforeCount.count - afterCount.count
+    });
+  } catch (e) {
+    return jsonResponse({ error: e.message }, 500);
+  }
 }
 
 // ============================================================
