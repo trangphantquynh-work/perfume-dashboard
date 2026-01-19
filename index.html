@@ -16,7 +16,7 @@
     <!-- Flatpickr -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://npmcdn.com/flatpickr/dist/l10n/vn.js"></script>
+    <!-- Flatpickr English is default, no additional locale needed -->
 
     <script>
         tailwind.config = {
@@ -172,6 +172,12 @@
                         <i class="ph ph-arrows-clockwise"></i>
                         <span>Refresh</span>
                     </button>
+
+                    <a href="organic-paid.html"
+                        class="flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white px-4 py-2 rounded-xl text-sm font-medium transition-all shadow-lg shadow-emerald-500/20 active:scale-95">
+                        <i class="ph ph-chart-pie-slice"></i>
+                        <span>Organic vs Paid</span>
+                    </a>
                 </div>
             </div>
         </div>
@@ -182,20 +188,28 @@
 
         <!-- ========== SECTION 1: CHANNEL (FB vs IG) ========== -->
         <div class="fade-in-up">
-            <div class="flex items-center gap-3 mb-4">
-                <div class="w-1 h-8 bg-gradient-to-b from-blue-500 to-pink-500 rounded-full"></div>
-                <div>
-                    <h2 class="text-xl font-bold text-slate-900">By Channel</h2>
-                    <p class="text-slate-500 text-sm">Facebook vs Instagram</p>
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-1 h-8 bg-gradient-to-b from-blue-500 to-pink-500 rounded-full"></div>
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900">By Channel</h2>
+                        <p class="text-slate-500 text-sm">Facebook vs Instagram</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs text-slate-500">Compare with Plan:</span>
+                    <select id="channelPlanMonthSelect" class="px-3 py-1.5 text-sm border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <option value="2026-1">T1/2026</option>
+                    </select>
                 </div>
             </div>
         </div>
 
         <!-- Channel Summary Card -->
         <div class="glass-card rounded-2xl p-6 fade-in-up delay-100">
-            <!-- Row 1: Chi tiêu -->
+            <!-- Row 1: Spend -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                <!-- Tổng chi tiêu -->
+                <!-- Total Spend -->
                 <div class="text-center p-4 bg-gradient-to-br from-slate-50 to-slate-100 rounded-xl">
                     <div class="flex items-center justify-center gap-2 mb-2">
                         <div class="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-pink-500 flex items-center justify-center">
@@ -205,9 +219,10 @@
                     <p class="text-sm text-slate-500 mb-1">Total Spend</p>
                     <p class="text-2xl font-bold text-slate-900" id="channel-total-spend">--</p>
                     <p class="text-xs mt-1 hidden" id="channel-total-spend-change"></p>
+                    <p class="text-xs mt-1 text-indigo-600" id="channel-total-spend-plan"></p>
                 </div>
 
-                <!-- Chi tiêu Facebook -->
+                <!-- Facebook Spend -->
                 <div class="text-center p-4 bg-blue-50 rounded-xl border border-blue-100">
                     <div class="flex items-center justify-center gap-2 mb-2">
                         <div class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center">
@@ -217,9 +232,10 @@
                     <p class="text-sm text-slate-500 mb-1">Facebook Spend</p>
                     <p class="text-2xl font-bold text-blue-600" id="fb-spend">--</p>
                     <p class="text-xs mt-1 hidden" id="fb-spend-change"></p>
+                    <p class="text-xs mt-1 text-indigo-600" id="fb-spend-plan"></p>
                 </div>
 
-                <!-- Chi tiêu Instagram -->
+                <!-- Instagram Spend -->
                 <div class="text-center p-4 bg-pink-50 rounded-xl border border-pink-100">
                     <div class="flex items-center justify-center gap-2 mb-2">
                         <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-purple-500 via-pink-500 to-orange-400 flex items-center justify-center">
@@ -229,15 +245,16 @@
                     <p class="text-sm text-slate-500 mb-1">Instagram Spend</p>
                     <p class="text-2xl font-bold text-pink-600" id="ig-spend">--</p>
                     <p class="text-xs mt-1 hidden" id="ig-spend-change"></p>
+                    <p class="text-xs mt-1 text-indigo-600" id="ig-spend-plan"></p>
                 </div>
             </div>
 
             <!-- Divider -->
             <div class="border-t border-slate-200 my-4"></div>
 
-            <!-- Row 2: Kết quả -->
+            <!-- Row 2: Results -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Tổng tin nhắn -->
+                <!-- Total Messages -->
                 <div class="flex items-center gap-4 p-4 bg-purple-50 rounded-xl border border-purple-100">
                     <div class="w-12 h-12 rounded-xl bg-purple-500 flex items-center justify-center flex-shrink-0">
                         <i class="ph-fill ph-chat-circle-dots text-2xl text-white"></i>
@@ -246,10 +263,11 @@
                         <p class="text-sm text-slate-500">Messages</p>
                         <p class="text-xl font-bold text-purple-600" id="channel-total-messages">--</p>
                         <p class="text-xs hidden" id="channel-total-messages-change"></p>
+                        <p class="text-xs text-indigo-600" id="channel-total-messages-plan"></p>
                     </div>
                 </div>
 
-                <!-- Tổng hiển thị -->
+                <!-- Total Impressions -->
                 <div class="flex items-center gap-4 p-4 bg-teal-50 rounded-xl border border-teal-100">
                     <div class="w-12 h-12 rounded-xl bg-teal-500 flex items-center justify-center flex-shrink-0">
                         <i class="ph-fill ph-eye text-2xl text-white"></i>
@@ -258,6 +276,7 @@
                         <p class="text-sm text-slate-500">Impressions</p>
                         <p class="text-xl font-bold text-teal-600" id="channel-total-impressions">--</p>
                         <p class="text-xs hidden" id="channel-total-impressions-change"></p>
+                        <p class="text-xs text-indigo-600" id="channel-total-impressions-plan"></p>
                     </div>
                 </div>
 
@@ -270,6 +289,7 @@
                         <p class="text-sm text-slate-500">Visit Profile IG</p>
                         <p class="text-xl font-bold text-amber-600" id="channel-total-visits">--</p>
                         <p class="text-xs hidden" id="channel-total-visits-change"></p>
+                        <p class="text-xs text-indigo-600" id="channel-total-visits-plan"></p>
                     </div>
                 </div>
             </div>
@@ -281,51 +301,86 @@
                 <div class="w-1 h-8 bg-gradient-to-b from-purple-500 via-teal-500 to-amber-500 rounded-full"></div>
                 <div>
                     <h2 class="text-xl font-bold text-slate-900">By Objective</h2>
-                    <p class="text-slate-500 text-sm">Message / Impression / Visit IG</p>
+                    <p class="text-slate-500 text-sm">FB Message / IG Message / Impression / Visit IG</p>
                 </div>
             </div>
         </div>
 
         <!-- Objective KPI Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 fade-in-up delay-200">
-            <!-- Message Card -->
-            <div class="glass-card rounded-2xl p-5 border-t-4 border-purple-500">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 fade-in-up delay-200">
+            <!-- FB Message Card -->
+            <div class="glass-card rounded-2xl p-5 border-t-4 border-blue-500">
                 <div class="flex items-center gap-3 mb-4">
-                    <div class="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center">
-                        <i class="ph-fill ph-chat-circle-dots text-xl text-purple-600"></i>
+                    <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
+                        <i class="ph-fill ph-facebook-logo text-xl text-blue-600"></i>
                     </div>
                     <div>
-                        <h3 class="font-bold text-slate-900">Message</h3>
-                        <p class="text-xs text-slate-500">Messages</p>
+                        <h3 class="font-bold text-slate-900">FB Message</h3>
+                        <p class="text-xs text-slate-500">Facebook Messages</p>
                     </div>
                 </div>
-                <div class="space-y-3" id="mess-kpis">
+                <div class="space-y-3" id="fb-mess-kpis">
                     <div class="flex justify-between items-center">
                         <span class="text-sm text-slate-500">Spend</span>
                         <div class="text-right">
-                            <span class="font-bold text-slate-900" id="mess-spend">--</span>
-                            <span class="text-xs ml-1 hidden" id="mess-spend-change"></span>
-                        </div>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-sm text-slate-500">Impressions</span>
-                        <div class="text-right">
-                            <span class="font-bold text-slate-900" id="mess-impressions">--</span>
-                            <span class="text-xs ml-1 hidden" id="mess-impressions-change"></span>
+                            <span class="font-bold text-slate-900" id="fb-mess-spend">--</span>
+                            <span class="text-xs ml-1 hidden" id="fb-mess-spend-change"></span>
+                            <div class="text-xs text-indigo-600" id="fb-mess-spend-plan"></div>
                         </div>
                     </div>
                     <div class="flex justify-between items-center">
                         <span class="text-sm text-slate-500">Results</span>
                         <div class="text-right">
-                            <span class="font-bold text-slate-900" id="mess-results">--</span>
-                            <span class="text-xs ml-1 hidden" id="mess-results-change"></span>
+                            <span class="font-bold text-slate-900" id="fb-mess-results">--</span>
+                            <span class="text-xs ml-1 hidden" id="fb-mess-results-change"></span>
+                            <div class="text-xs text-indigo-600" id="fb-mess-results-plan"></div>
                         </div>
                     </div>
                     <div class="flex justify-between items-center pt-2 border-t border-slate-100">
                         <span class="text-sm text-slate-500">CPR</span>
                         <div class="text-right">
-                            <span class="font-bold text-purple-600" id="mess-cpr">--</span>
-                            <span class="text-xs ml-1 hidden" id="mess-cpr-change"></span>
+                            <span class="font-bold text-blue-600" id="fb-mess-cpr">--</span>
+                            <span class="text-xs ml-1 hidden" id="fb-mess-cpr-change"></span>
+                            <div class="text-xs text-indigo-600" id="fb-mess-cpr-plan"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- IG Message Card -->
+            <div class="glass-card rounded-2xl p-5 border-t-4 border-pink-500">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 rounded-lg bg-pink-100 flex items-center justify-center">
+                        <i class="ph-fill ph-instagram-logo text-xl text-pink-600"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-slate-900">IG Message</h3>
+                        <p class="text-xs text-slate-500">Instagram Messages</p>
+                    </div>
+                </div>
+                <div class="space-y-3" id="ig-mess-kpis">
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-slate-500">Spend</span>
+                        <div class="text-right">
+                            <span class="font-bold text-slate-900" id="ig-mess-spend">--</span>
+                            <span class="text-xs ml-1 hidden" id="ig-mess-spend-change"></span>
+                            <div class="text-xs text-indigo-600" id="ig-mess-spend-plan"></div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-slate-500">Results</span>
+                        <div class="text-right">
+                            <span class="font-bold text-slate-900" id="ig-mess-results">--</span>
+                            <span class="text-xs ml-1 hidden" id="ig-mess-results-change"></span>
+                            <div class="text-xs text-indigo-600" id="ig-mess-results-plan"></div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center pt-2 border-t border-slate-100">
+                        <span class="text-sm text-slate-500">CPR</span>
+                        <div class="text-right">
+                            <span class="font-bold text-pink-600" id="ig-mess-cpr">--</span>
+                            <span class="text-xs ml-1 hidden" id="ig-mess-cpr-change"></span>
+                            <div class="text-xs text-indigo-600" id="ig-mess-cpr-plan"></div>
                         </div>
                     </div>
                 </div>
@@ -348,13 +403,7 @@
                         <div class="text-right">
                             <span class="font-bold text-slate-900" id="impr-spend">--</span>
                             <span class="text-xs ml-1 hidden" id="impr-spend-change"></span>
-                        </div>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-sm text-slate-500">Impressions</span>
-                        <div class="text-right">
-                            <span class="font-bold text-slate-900" id="impr-impressions">--</span>
-                            <span class="text-xs ml-1 hidden" id="impr-impressions-change"></span>
+                            <div class="text-xs text-indigo-600" id="impr-spend-plan"></div>
                         </div>
                     </div>
                     <div class="flex justify-between items-center">
@@ -362,6 +411,7 @@
                         <div class="text-right">
                             <span class="font-bold text-slate-900" id="impr-results">--</span>
                             <span class="text-xs ml-1 hidden" id="impr-results-change"></span>
+                            <div class="text-xs text-indigo-600" id="impr-results-plan"></div>
                         </div>
                     </div>
                     <div class="flex justify-between items-center pt-2 border-t border-slate-100">
@@ -369,6 +419,7 @@
                         <div class="text-right">
                             <span class="font-bold text-teal-600" id="impr-cpm">--</span>
                             <span class="text-xs ml-1 hidden" id="impr-cpm-change"></span>
+                            <div class="text-xs text-indigo-600" id="impr-cpm-plan"></div>
                         </div>
                     </div>
                 </div>
@@ -391,13 +442,7 @@
                         <div class="text-right">
                             <span class="font-bold text-slate-900" id="visit-spend">--</span>
                             <span class="text-xs ml-1 hidden" id="visit-spend-change"></span>
-                        </div>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-sm text-slate-500">Impressions</span>
-                        <div class="text-right">
-                            <span class="font-bold text-slate-900" id="visit-impressions">--</span>
-                            <span class="text-xs ml-1 hidden" id="visit-impressions-change"></span>
+                            <div class="text-xs text-indigo-600" id="visit-spend-plan"></div>
                         </div>
                     </div>
                     <div class="flex justify-between items-center">
@@ -405,6 +450,7 @@
                         <div class="text-right">
                             <span class="font-bold text-slate-900" id="visit-results">--</span>
                             <span class="text-xs ml-1 hidden" id="visit-results-change"></span>
+                            <div class="text-xs text-indigo-600" id="visit-results-plan"></div>
                         </div>
                     </div>
                     <div class="flex justify-between items-center pt-2 border-t border-slate-100">
@@ -412,9 +458,65 @@
                         <div class="text-right">
                             <span class="font-bold text-amber-600" id="visit-cpr">--</span>
                             <span class="text-xs ml-1 hidden" id="visit-cpr-change"></span>
+                            <div class="text-xs text-indigo-600" id="visit-cpr-plan"></div>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- ========== SECTION: MONTH OVER MONTH ========== -->
+        <div class="fade-in-up delay-300 mt-10">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-1 h-8 bg-gradient-to-b from-indigo-500 to-cyan-500 rounded-full"></div>
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900">Month over Month</h2>
+                    <p class="text-slate-500 text-sm">Performance comparison for the last 3 months</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- MoM Insight Table -->
+        <div class="glass-card rounded-2xl overflow-hidden fade-in-up delay-300">
+            <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+                <div>
+                    <h3 class="font-bold text-slate-900">Month over Month Comparison</h3>
+                    <p class="text-xs text-slate-500 mt-1">% change compared to previous month</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs text-slate-500">Plan Month:</span>
+                    <select id="planMonthSelect" class="px-3 py-1.5 text-sm border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                        <option value="2026-1">T1/2026</option>
+                    </select>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm border-collapse">
+                    <thead class="text-xs text-slate-500 uppercase bg-slate-50/50 font-semibold">
+                        <tr>
+                            <th class="px-4 py-3 text-left border-r-2 border-slate-200" rowspan="2">Category</th>
+                            <th class="px-2 py-2 text-center border-b border-slate-200 border-r-2 border-r-slate-300" colspan="3" id="mom-month-1">--</th>
+                            <th class="px-2 py-2 text-center border-b border-slate-200 border-r-2 border-r-slate-300 bg-indigo-50/50" colspan="3" id="mom-month-2">--</th>
+                            <th class="px-2 py-2 text-center border-b border-slate-200" colspan="3" id="mom-month-3">--</th>
+                        </tr>
+                        <tr class="text-[10px] text-slate-400">
+                            <th class="px-2 pb-2 text-center">Results</th>
+                            <th class="px-2 pb-2 text-center">Spending</th>
+                            <th class="px-2 pb-2 text-center border-r-2 border-r-slate-300">CPR</th>
+                            <th class="px-2 pb-2 text-center bg-indigo-50/50">Results</th>
+                            <th class="px-2 pb-2 text-center bg-indigo-50/50">Spending</th>
+                            <th class="px-2 pb-2 text-center bg-indigo-50/50 border-r-2 border-r-slate-300">CPR</th>
+                            <th class="px-2 pb-2 text-center">Results</th>
+                            <th class="px-2 pb-2 text-center">Spending</th>
+                            <th class="px-2 pb-2 text-center">CPR</th>
+                        </tr>
+                    </thead>
+                    <tbody id="momTable" class="divide-y divide-slate-100">
+                        <tr>
+                            <td colspan="10" class="px-6 py-8 text-center text-slate-400">Loading data...</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
 
@@ -685,6 +787,52 @@
             </div>
         </div>
 
+        <!-- ========== SECTION: BUDGET SUGGESTION ========== -->
+        <div class="fade-in-up delay-400 mt-8">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-1 h-8 bg-gradient-to-b from-emerald-500 to-lime-500 rounded-full"></div>
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900">Budget Suggestion</h2>
+                    <p class="text-slate-500 text-sm">Daily spending recommendation for remaining days</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Budget Suggestion Table -->
+        <div class="glass-card rounded-2xl overflow-hidden fade-in-up delay-400">
+            <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+                <div>
+                    <h3 class="font-bold text-slate-900">Daily Budget Recommendation</h3>
+                    <p class="text-xs text-slate-500 mt-1" id="budget-info">Loading...</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs text-slate-500">Month:</span>
+                    <select id="budgetMonthSelect" class="px-3 py-1.5 text-sm border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+                        <option value="2026-1">T1/2026</option>
+                    </select>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm border-collapse">
+                    <thead class="text-xs text-slate-500 uppercase bg-slate-50/50 font-semibold">
+                        <tr>
+                            <th class="px-4 py-3 text-left">Category</th>
+                            <th class="px-4 py-3 text-right">Plan Budget</th>
+                            <th class="px-4 py-3 text-right">Actual Spent</th>
+                            <th class="px-4 py-3 text-right">Remaining</th>
+                            <th class="px-4 py-3 text-center">Progress</th>
+                            <th class="px-4 py-3 text-right bg-emerald-50">Daily Suggestion</th>
+                        </tr>
+                    </thead>
+                    <tbody id="budgetSuggestionTable" class="divide-y divide-slate-100">
+                        <tr>
+                            <td colspan="6" class="px-6 py-8 text-center text-slate-400">Loading data...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
     </main>
 
     <!-- Footer -->
@@ -697,13 +845,16 @@
     <!-- Logic Script -->
     <script>
         // --- CONFIG & STATE ---
-        const API_BASE = 'https://perfume-dashboard-api.duongthien408.workers.dev'; // Worker API URL
+        const API_BASE = 'https://parfumelite-dashboard.duongthien408.workers.dev'; // Worker API URL
         let chartInstances = {};
 
         let state = {
             startDate: null,
             endDate: null,
-            compare: false
+            compare: false,
+            planMonth: '2026-1', // Default plan month for MoM
+            channelPlanMonth: '2026-1', // Default plan month for Channel/Objective comparison
+            budgetMonth: '2026-1' // Default month for Budget Suggestion
         };
 
         // Brand Palette
@@ -783,14 +934,17 @@
                 console.log('Fetching data...', state);
 
                 // Parallel Fetch - current period
-                const [demo, regions, breakdown, topAds, topProducts, productDailyFB, productDailyIG] = await Promise.all([
+                const [demo, regions, breakdown, topAds, topProducts, productDailyFB, productDailyIG, momData, planData, budgetSuggestion] = await Promise.all([
                     fetchData('/api/demographics'),
                     fetchData('/api/regions', { limit: 10 }),
                     fetchData('/api/breakdown'),
                     fetchData('/api/top-ads', { limit: 3 }),
                     fetchData('/api/top-products', { limit: 5 }),
                     fetchData('/api/product-daily-fb', { limit: 5 }),
-                    fetchData('/api/product-daily-ig', { limit: 5 })
+                    fetchData('/api/product-daily-ig', { limit: 5 }),
+                    fetchData('/api/month-over-month', { planMonth: state.planMonth }),
+                    fetchData('/api/plan-data', { planMonth: state.channelPlanMonth }),
+                    fetchBudgetSuggestion()
                 ]);
 
                 console.log('Data fetched:', { breakdown, topAds, topProducts, productDailyFB, productDailyIG });
@@ -807,15 +961,25 @@
                 if (demo) updateDemoChart(demo);
                 if (regions) updateRegionChart(regions);
                 if (breakdown) {
-                    updateChannelKPIs(breakdown.by_channel, breakdown.by_objective, comparisonBreakdown?.by_channel, comparisonBreakdown?.by_objective);
-                    updateObjectiveKPIs(breakdown.by_objective, comparisonBreakdown?.by_objective);
+                    updateChannelKPIs(breakdown.by_channel, breakdown.by_objective, comparisonBreakdown?.by_channel, comparisonBreakdown?.by_objective, planData);
+                    updateObjectiveKPIs(breakdown.by_objective, comparisonBreakdown?.by_objective, planData);
                     updateBreakdownTable(breakdown.by_campaign, comparisonBreakdown?.by_campaign);
+                }
+                // Update plan dropdown options
+                if (planData?.availablePlanMonths) {
+                    updateChannelPlanDropdown(planData.availablePlanMonths, planData.selectedPlanMonth);
                 }
                 if (topAds) {
                     updateTopAds(topAds);
                 }
                 if (topProducts) {
                     updateTopProducts(topProducts);
+                }
+                if (momData) {
+                    updateMoMCharts(momData);
+                }
+                if (budgetSuggestion) {
+                    updateBudgetSuggestion(budgetSuggestion);
                 }
 
                 document.body.style.cursor = 'default';
@@ -827,8 +991,18 @@
 
         // --- UPDATERS ---
 
+        // Update Channel Plan Dropdown
+        function updateChannelPlanDropdown(options, selectedValue) {
+            const select = document.getElementById('channelPlanMonthSelect');
+            if (!select || !options) return;
+
+            select.innerHTML = options.map(opt =>
+                `<option value="${opt.value}" ${opt.value === selectedValue ? 'selected' : ''}>${opt.label}</option>`
+            ).join('');
+        }
+
         // Update Channel KPIs (new 6 KPIs layout)
-        function updateChannelKPIs(channelData, objectiveData, compChannelData, compObjectiveData) {
+        function updateChannelKPIs(channelData, objectiveData, compChannelData, compObjectiveData, planData) {
             // Find Facebook and Instagram data
             const fbData = channelData.find(d => d.channel === 'Facebook') || {};
             const igData = channelData.find(d => d.channel === 'Instagram') || {};
@@ -836,6 +1010,7 @@
             // Find objective data for messages and visits
             const messData = objectiveData?.find(d => d.objective === 'Message') || {};
             const visitData = objectiveData?.find(d => d.objective === 'Visit') || {};
+            const imprData = objectiveData?.find(d => d.objective === 'Impression') || {};
 
             // Find comparison data
             const fbPrev = compChannelData?.find(d => d.channel === 'Facebook') || {};
@@ -843,84 +1018,124 @@
             const messPrev = compObjectiveData?.find(d => d.objective === 'Message') || {};
             const visitPrev = compObjectiveData?.find(d => d.objective === 'Visit') || {};
 
+            // Plan data
+            const planChannel = planData?.by_channel || {};
+            const planObjective = planData?.by_objective || {};
+
             // Calculate totals
             const totalSpend = (fbData.total_spend || 0) + (igData.total_spend || 0);
             const totalImpressions = (fbData.total_impressions || 0) + (igData.total_impressions || 0);
             const totalSpendPrev = (fbPrev.total_spend || 0) + (igPrev.total_spend || 0);
             const totalImpressionsPrev = (fbPrev.total_impressions || 0) + (igPrev.total_impressions || 0);
+            const planTotalSpend = (planChannel.Facebook?.spend || 0) + (planChannel.Instagram?.spend || 0);
 
             // Update Total Spend
             document.getElementById('channel-total-spend').textContent = formatCurrency(totalSpend);
             updateChangeEl('channel-total-spend-change', totalSpend, totalSpendPrev);
+            document.getElementById('channel-total-spend-plan').textContent = planTotalSpend ? `Plan: ${formatCurrency(planTotalSpend)}` : '';
 
             // Update Facebook Spend
             document.getElementById('fb-spend').textContent = formatCurrency(fbData.total_spend || 0);
             updateChangeEl('fb-spend-change', fbData.total_spend, fbPrev.total_spend);
+            document.getElementById('fb-spend-plan').textContent = planChannel.Facebook ? `Plan: ${formatCurrency(planChannel.Facebook.spend)}` : '';
 
             // Update Instagram Spend
             document.getElementById('ig-spend').textContent = formatCurrency(igData.total_spend || 0);
             updateChangeEl('ig-spend-change', igData.total_spend, igPrev.total_spend);
+            document.getElementById('ig-spend-plan').textContent = planChannel.Instagram ? `Plan: ${formatCurrency(planChannel.Instagram.spend)}` : '';
 
             // Update Total Messages (from Message objective results)
             document.getElementById('channel-total-messages').textContent = formatNumber(messData.total_results || 0);
             updateChangeEl('channel-total-messages-change', messData.total_results, messPrev.total_results);
+            document.getElementById('channel-total-messages-plan').textContent = planObjective.Message ? `Plan: ${formatNumber(planObjective.Message.results)}` : '';
 
             // Update Total Impressions
             document.getElementById('channel-total-impressions').textContent = formatNumber(totalImpressions);
             updateChangeEl('channel-total-impressions-change', totalImpressions, totalImpressionsPrev);
+            document.getElementById('channel-total-impressions-plan').textContent = planObjective.Impression ? `Plan: ${formatNumber(planObjective.Impression.results)}` : '';
 
             // Update Total Visit Profile (from Visit objective results)
             document.getElementById('channel-total-visits').textContent = formatNumber(visitData.total_results || 0);
             updateChangeEl('channel-total-visits-change', visitData.total_results, visitPrev.total_results);
+            document.getElementById('channel-total-visits-plan').textContent = planObjective.Visit ? `Plan: ${formatNumber(planObjective.Visit.results)}` : '';
         }
 
-        // Update Objective KPIs (Message / Impression / Visit)
-        function updateObjectiveKPIs(data, comparisonData) {
+        // Update Objective KPIs (FB Message / IG Message / Impression / Visit)
+        function updateObjectiveKPIs(data, comparisonData, planData) {
             // Find each objective data
-            const messData = data.find(d => d.objective === 'Message') || {};
+            const fbMessData = data.find(d => d.objective === 'FB_Message') || {};
+            const igMessData = data.find(d => d.objective === 'IG_Message') || {};
             const imprData = data.find(d => d.objective === 'Impression') || {};
             const visitData = data.find(d => d.objective === 'Visit') || {};
 
             // Find comparison data
-            const messPrev = comparisonData?.find(d => d.objective === 'Message') || {};
+            const fbMessPrev = comparisonData?.find(d => d.objective === 'FB_Message') || {};
+            const igMessPrev = comparisonData?.find(d => d.objective === 'IG_Message') || {};
             const imprPrev = comparisonData?.find(d => d.objective === 'Impression') || {};
             const visitPrev = comparisonData?.find(d => d.objective === 'Visit') || {};
 
-            // Update Message KPIs
-            document.getElementById('mess-spend').textContent = formatCurrency(messData.total_spend || 0);
-            document.getElementById('mess-impressions').textContent = formatNumber(messData.total_impressions || 0);
-            document.getElementById('mess-results').textContent = formatNumber(messData.total_results || 0);
-            document.getElementById('mess-cpr').textContent = formatCurrency(messData.cpr || 0);
+            // Get Plan data by objective
+            const planObjective = planData?.by_objective || {};
 
-            // Update Message comparison
-            updateChangeEl('mess-spend-change', messData.total_spend, messPrev.total_spend);
-            updateChangeEl('mess-impressions-change', messData.total_impressions, messPrev.total_impressions);
-            updateChangeEl('mess-results-change', messData.total_results, messPrev.total_results);
-            updateChangeEl('mess-cpr-change', messData.cpr, messPrev.cpr, true);
+            // Update FB Message KPIs
+            document.getElementById('fb-mess-spend').textContent = formatCurrency(fbMessData.total_spend || 0);
+            document.getElementById('fb-mess-results').textContent = formatNumber(fbMessData.total_results || 0);
+            document.getElementById('fb-mess-cpr').textContent = formatCurrency(fbMessData.cpr || 0);
+
+            // Update FB Message comparison
+            updateChangeEl('fb-mess-spend-change', fbMessData.total_spend, fbMessPrev.total_spend);
+            updateChangeEl('fb-mess-results-change', fbMessData.total_results, fbMessPrev.total_results);
+            updateChangeEl('fb-mess-cpr-change', fbMessData.cpr, fbMessPrev.cpr, true);
+
+            // Update FB Message Plan
+            document.getElementById('fb-mess-spend-plan').textContent = planObjective.FB_Message ? `Plan: ${formatCurrency(planObjective.FB_Message.spend)}` : '';
+            document.getElementById('fb-mess-results-plan').textContent = planObjective.FB_Message ? `Plan: ${formatNumber(planObjective.FB_Message.results)}` : '';
+            document.getElementById('fb-mess-cpr-plan').textContent = planObjective.FB_Message ? `Plan: ${formatCurrency(planObjective.FB_Message.cpr)}` : '';
+
+            // Update IG Message KPIs
+            document.getElementById('ig-mess-spend').textContent = formatCurrency(igMessData.total_spend || 0);
+            document.getElementById('ig-mess-results').textContent = formatNumber(igMessData.total_results || 0);
+            document.getElementById('ig-mess-cpr').textContent = formatCurrency(igMessData.cpr || 0);
+
+            // Update IG Message comparison
+            updateChangeEl('ig-mess-spend-change', igMessData.total_spend, igMessPrev.total_spend);
+            updateChangeEl('ig-mess-results-change', igMessData.total_results, igMessPrev.total_results);
+            updateChangeEl('ig-mess-cpr-change', igMessData.cpr, igMessPrev.cpr, true);
+
+            // Update IG Message Plan
+            document.getElementById('ig-mess-spend-plan').textContent = planObjective.IG_Message ? `Plan: ${formatCurrency(planObjective.IG_Message.spend)}` : '';
+            document.getElementById('ig-mess-results-plan').textContent = planObjective.IG_Message ? `Plan: ${formatNumber(planObjective.IG_Message.results)}` : '';
+            document.getElementById('ig-mess-cpr-plan').textContent = planObjective.IG_Message ? `Plan: ${formatCurrency(planObjective.IG_Message.cpr)}` : '';
 
             // Update Impression KPIs
             document.getElementById('impr-spend').textContent = formatCurrency(imprData.total_spend || 0);
-            document.getElementById('impr-impressions').textContent = formatNumber(imprData.total_impressions || 0);
             document.getElementById('impr-results').textContent = formatNumber(imprData.total_results || 0);
             document.getElementById('impr-cpm').textContent = formatCurrency(imprData.cpm || 0);
 
             // Update Impression comparison
             updateChangeEl('impr-spend-change', imprData.total_spend, imprPrev.total_spend);
-            updateChangeEl('impr-impressions-change', imprData.total_impressions, imprPrev.total_impressions);
             updateChangeEl('impr-results-change', imprData.total_results, imprPrev.total_results);
             updateChangeEl('impr-cpm-change', imprData.cpm, imprPrev.cpm, true);
 
+            // Update Impression Plan
+            document.getElementById('impr-spend-plan').textContent = planObjective.Impression ? `Plan: ${formatCurrency(planObjective.Impression.spend)}` : '';
+            document.getElementById('impr-results-plan').textContent = planObjective.Impression ? `Plan: ${formatNumber(planObjective.Impression.results)}` : '';
+            document.getElementById('impr-cpm-plan').textContent = planObjective.Impression ? `Plan: ${formatCurrency(planObjective.Impression.cpm)}` : '';
+
             // Update Visit KPIs
             document.getElementById('visit-spend').textContent = formatCurrency(visitData.total_spend || 0);
-            document.getElementById('visit-impressions').textContent = formatNumber(visitData.total_impressions || 0);
             document.getElementById('visit-results').textContent = formatNumber(visitData.total_results || 0);
             document.getElementById('visit-cpr').textContent = formatCurrency(visitData.cpr || 0);
 
             // Update Visit comparison
             updateChangeEl('visit-spend-change', visitData.total_spend, visitPrev.total_spend);
-            updateChangeEl('visit-impressions-change', visitData.total_impressions, visitPrev.total_impressions);
             updateChangeEl('visit-results-change', visitData.total_results, visitPrev.total_results);
             updateChangeEl('visit-cpr-change', visitData.cpr, visitPrev.cpr, true);
+
+            // Update Visit Plan
+            document.getElementById('visit-spend-plan').textContent = planObjective.Visit ? `Plan: ${formatCurrency(planObjective.Visit.spend)}` : '';
+            document.getElementById('visit-results-plan').textContent = planObjective.Visit ? `Plan: ${formatNumber(planObjective.Visit.results)}` : '';
+            document.getElementById('visit-cpr-plan').textContent = planObjective.Visit ? `Plan: ${formatCurrency(planObjective.Visit.cpr)}` : '';
         }
 
         function updateTable(data) {
@@ -1202,6 +1417,168 @@
             });
         }
 
+        // Month-over-Month Table (simplified - no charts)
+        function updateMoMCharts(data) {
+            if (!data || !data.categories) return;
+
+            const months = data.months;
+
+            // Update table headers
+            if (months.length >= 3) {
+                document.getElementById('mom-month-1').textContent = months[0];
+                document.getElementById('mom-month-2').textContent = months[1];
+                document.getElementById('mom-month-3').textContent = months[2];
+            }
+
+            // Update plan month dropdown options
+            if (data.availablePlanMonths) {
+                const select = document.getElementById('planMonthSelect');
+                const currentValue = select.value;
+                select.innerHTML = data.availablePlanMonths.map(m =>
+                    `<option value="${m.value}" ${m.value === data.selectedPlanMonth ? 'selected' : ''}>${m.label}</option>`
+                ).join('');
+                // Restore selection if it exists
+                if (currentValue && data.availablePlanMonths.some(m => m.value === currentValue)) {
+                    select.value = currentValue;
+                }
+            }
+
+            // Update table
+            updateMoMTable(data);
+        }
+
+        // Month-over-Month Insight Table
+        function updateMoMTable(data) {
+            const tbody = document.getElementById('momTable');
+            if (!data || !data.categories) {
+                tbody.innerHTML = '<tr><td colspan="10" class="px-6 py-8 text-center text-slate-400">No data available</td></tr>';
+                return;
+            }
+
+            const cats = data.categories;
+            const categoryKeys = ['fb_impression', 'fb_mess', 'ig_visits', 'ig_mess'];
+            const categoryConfig = {
+                'fb_impression': { label: 'FB Impression', icon: 'ph-eye', bgColor: 'bg-blue-500' },
+                'fb_mess': { label: 'FB Message', icon: 'ph-chat-circle-dots', bgColor: 'bg-purple-500' },
+                'ig_visits': { label: 'IG Visits', icon: 'ph-user-focus', bgColor: 'bg-amber-500' },
+                'ig_mess': { label: 'IG Message', icon: 'ph-instagram-logo', bgColor: 'bg-pink-500' }
+            };
+
+            // Calculate MoM change (compare with previous month)
+            const getMoMChange = (curr, prev, inverse = false) => {
+                if (!prev || prev === 0) return { change: curr > 0 ? 100 : 0, isGood: !inverse };
+                const change = ((curr - prev) / prev) * 100;
+                const isGood = inverse ? change < 0 : change > 0;
+                return { change, isGood };
+            };
+
+            // Render value with % change below
+            const renderMetricCell = (value, prevValue, formatFn, inverse = false, isHighlight = false, hasBorderRight = false) => {
+                const mom = getMoMChange(value, prevValue, inverse);
+                const arrow = mom.change > 0 ? '↑' : mom.change < 0 ? '↓' : '→';
+                const changeColor = mom.isGood ? 'text-emerald-600' : mom.change !== 0 ? 'text-rose-600' : 'text-slate-400';
+                const bgClass = isHighlight ? 'bg-indigo-50/30' : '';
+                const borderClass = hasBorderRight ? 'border-r-2 border-r-slate-300' : '';
+
+                return `
+                    <td class="px-2 py-3 text-center ${bgClass} ${borderClass}">
+                        <div class="text-slate-900 font-medium tabular-nums text-sm">${formatFn(value || 0)}</div>
+                        <div class="text-[10px] ${changeColor} font-medium mt-0.5">${arrow} ${Math.abs(mom.change).toFixed(0)}%</div>
+                    </td>
+                `;
+            };
+
+            let html = '';
+
+            // Calculate total spending for each month
+            let totalSpending = [0, 0, 0];
+            let prevTotalSpending = 0;
+
+            categoryKeys.forEach(key => {
+                const cat = cats[key];
+                if (!cat) return;
+                const config = categoryConfig[key];
+
+                // Use previous month data for first month comparison (T10 for T11)
+                const prevResults = cat.previousResults || 0;
+                const prevSpending = cat.previousSpending || 0;
+                const prevCpr = cat.previousCpr || 0;
+
+                // Accumulate spending totals
+                totalSpending[0] += cat.spending[0] || 0;
+                totalSpending[1] += cat.spending[1] || 0;
+                totalSpending[2] += cat.spending[2] || 0;
+                prevTotalSpending += prevSpending;
+
+                html += `
+                    <tr class="hover:bg-slate-50/50 transition-colors">
+                        <td class="px-4 py-3 border-r-2 border-r-slate-200">
+                            <div class="flex items-center gap-2">
+                                <div class="w-7 h-7 rounded-lg ${config.bgColor} flex items-center justify-center flex-shrink-0">
+                                    <i class="ph-fill ${config.icon} text-white text-xs"></i>
+                                </div>
+                                <span class="font-semibold text-slate-800 text-sm">${config.label}</span>
+                            </div>
+                        </td>
+                        ${renderMetricCell(cat.results[0], prevResults, formatNumber, false, false, false)}
+                        ${renderMetricCell(cat.spending[0], prevSpending, formatCurrency, false, false, false)}
+                        ${renderMetricCell(cat.cpr[0], prevCpr, formatCurrency, true, false, true)}
+                        ${renderMetricCell(cat.results[1], cat.results[0], formatNumber, false, true, false)}
+                        ${renderMetricCell(cat.spending[1], cat.spending[0], formatCurrency, false, true, false)}
+                        ${renderMetricCell(cat.cpr[1], cat.cpr[0], formatCurrency, true, true, true)}
+                        ${renderMetricCell(cat.results[2], cat.results[1], formatNumber, false, false, false)}
+                        ${renderMetricCell(cat.spending[2], cat.spending[1], formatCurrency, false, false, false)}
+                        ${renderMetricCell(cat.cpr[2], cat.cpr[1], formatCurrency, true, false, false)}
+                    </tr>
+                `;
+            });
+
+            // Add Total row (only for Spending columns)
+            const renderTotalCell = (value, prevValue, isHighlight = false, hasBorderRight = false) => {
+                const calcChange = (curr, prev) => {
+                    if (!prev || prev === 0) return { change: curr > 0 ? 100 : 0, isGood: true };
+                    const change = ((curr - prev) / prev) * 100;
+                    return { change, isGood: change > 0 };
+                };
+                const mom = calcChange(value, prevValue);
+                const arrow = mom.change > 0 ? '↑' : mom.change < 0 ? '↓' : '→';
+                const changeColor = mom.isGood ? 'text-emerald-600' : mom.change !== 0 ? 'text-rose-600' : 'text-slate-400';
+                const bgClass = isHighlight ? 'bg-indigo-50/30' : '';
+                const borderClass = hasBorderRight ? 'border-r-2 border-r-slate-300' : '';
+
+                return `
+                    <td class="px-2 py-3 text-center ${bgClass} ${borderClass}">
+                        <div class="text-slate-900 font-bold tabular-nums text-sm">${formatCurrency(value)}</div>
+                        <div class="text-[10px] ${changeColor} font-medium mt-0.5">${arrow} ${Math.abs(mom.change).toFixed(0)}%</div>
+                    </td>
+                `;
+            };
+
+            html += `
+                <tr class="bg-slate-100/70 border-t-2 border-slate-300">
+                    <td class="px-4 py-3 border-r-2 border-r-slate-200">
+                        <div class="flex items-center gap-2">
+                            <div class="w-7 h-7 rounded-lg bg-slate-600 flex items-center justify-center flex-shrink-0">
+                                <i class="ph-fill ph-equals text-white text-xs"></i>
+                            </div>
+                            <span class="font-bold text-slate-800 text-sm">Total</span>
+                        </div>
+                    </td>
+                    <td class="px-2 py-3 text-center"></td>
+                    ${renderTotalCell(totalSpending[0], prevTotalSpending, false, false)}
+                    <td class="px-2 py-3 text-center border-r-2 border-r-slate-300"></td>
+                    <td class="px-2 py-3 text-center bg-indigo-50/30"></td>
+                    ${renderTotalCell(totalSpending[1], totalSpending[0], true, false)}
+                    <td class="px-2 py-3 text-center bg-indigo-50/30 border-r-2 border-r-slate-300"></td>
+                    <td class="px-2 py-3 text-center"></td>
+                    ${renderTotalCell(totalSpending[2], totalSpending[1], false, false)}
+                    <td class="px-2 py-3 text-center"></td>
+                </tr>
+            `;
+
+            tbody.innerHTML = html;
+        }
+
         // Breakdown Table with comparison
         function updateBreakdownTable(data, comparisonData) {
             const tbody = document.getElementById('breakdownTable');
@@ -1284,6 +1661,14 @@
                                 <span class="text-xs ${colorClass} font-bold">${formatNumber(item[valueKey])} ${valueLabel}</span>
                                 <span class="text-xs text-slate-400">${formatCurrency(item.total_spend)}</span>
                             </div>
+                            ${item.preview_url ? `
+                            <a href="${item.preview_url}" target="_blank" rel="noopener noreferrer"
+                               class="inline-flex items-center gap-1 mt-2 text-xs text-blue-500 hover:text-blue-700 hover:underline transition-colors">
+                                <i class="ph ph-link text-sm"></i>
+                                <span>Preview Ad</span>
+                                <i class="ph ph-arrow-square-out text-xs"></i>
+                            </a>
+                            ` : ''}
                         </div>
                     </div>
                 `).join('');
@@ -1326,8 +1711,8 @@
         }
 
         // --- FORMATTERS ---
-        const formatCurrency = (val) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 }).format(val);
-        const formatNumber = (val) => new Intl.NumberFormat('vi-VN').format(val);
+        const formatCurrency = (val) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 }).format(val);
+        const formatNumber = (val) => new Intl.NumberFormat('en-US').format(val);
         const formatDate = (str) => {
             // Parse date string as local date (not UTC) to avoid timezone offset issues
             const parts = str.split('-');
@@ -1377,7 +1762,7 @@
                 mode: "range",
                 dateFormat: "Y-m-d",
                 defaultDate: [new Date().setDate(new Date().getDate() - 30), new Date()],
-                locale: "vn", // Would need locale script, default English for now
+                locale: "en", // English locale
                 onChange: function (selectedDates, dateStr, instance) {
                     if (selectedDates.length === 2) {
                         const start = selectedDates[0];
@@ -1420,11 +1805,178 @@
                 refreshData();
             });
 
+            // Plan Month Select - only refresh MoM data
+            document.getElementById('planMonthSelect').addEventListener('change', (e) => {
+                state.planMonth = e.target.value;
+                refreshMoMData();
+            });
+
+            // Channel Plan Month Select - refresh channel/objective Plan data
+            document.getElementById('channelPlanMonthSelect').addEventListener('change', (e) => {
+                state.channelPlanMonth = e.target.value;
+                refreshData();
+            });
+
+            // Budget Month Select - refresh budget suggestion data
+            document.getElementById('budgetMonthSelect').addEventListener('change', (e) => {
+                state.budgetMonth = e.target.value;
+                refreshBudgetSuggestion();
+            });
+
             refreshData();
         });
+
+        // Separate function to refresh only MoM data (for plan month change)
+        async function refreshMoMData() {
+            try {
+                const momData = await fetchData('/api/month-over-month', { planMonth: state.planMonth });
+                if (momData) {
+                    updateMoMCharts(momData);
+                }
+            } catch (err) {
+                console.error('refreshMoMData error:', err);
+            }
+        }
+
+        // Fetch budget suggestion data
+        async function fetchBudgetSuggestion() {
+            try {
+                const [year, month] = state.budgetMonth.split('-');
+                const url = new URL(`${API_BASE}/api/budget-suggestion`);
+                url.searchParams.append('year', year);
+                url.searchParams.append('month', month);
+
+                const res = await fetch(url);
+                const json = await res.json();
+                return json.success ? json.data : null;
+            } catch (e) {
+                console.error("Budget Suggestion API Error", e);
+                return null;
+            }
+        }
+
+        // Update Budget Suggestion table
+        function updateBudgetSuggestion(data) {
+            if (!data) return;
+
+            // Update info text
+            const infoEl = document.getElementById('budget-info');
+            if (infoEl) {
+                infoEl.textContent = `Data updated to ${data.lastDataDate} • ${data.remainingDays} days remaining in month`;
+            }
+
+            // Update dropdown options
+            const select = document.getElementById('budgetMonthSelect');
+            if (select) {
+                // Get available months from ALL_PLAN_DATA keys (same as MoM)
+                const availableMonths = [
+                    { value: '2025-10', label: 'T10/2025' },
+                    { value: '2025-11', label: 'T11/2025' },
+                    { value: '2025-12', label: 'T12/2025' },
+                    { value: '2026-1', label: 'T1/2026' },
+                    { value: '2026-2', label: 'T2/2026' }
+                ];
+                select.innerHTML = availableMonths.map(m =>
+                    `<option value="${m.value}" ${m.value === state.budgetMonth ? 'selected' : ''}>${m.label}</option>`
+                ).join('');
+            }
+
+            // Update table
+            const tbody = document.getElementById('budgetSuggestionTable');
+            if (!tbody || !data.suggestions) return;
+
+            const categoryConfig = {
+                'fb_impression': { icon: 'ph-eye', bgColor: 'bg-blue-500', textColor: 'text-blue-600' },
+                'fb_mess': { icon: 'ph-chat-circle-dots', bgColor: 'bg-purple-500', textColor: 'text-purple-600' },
+                'ig_visits': { icon: 'ph-user-focus', bgColor: 'bg-amber-500', textColor: 'text-amber-600' },
+                'ig_mess': { icon: 'ph-instagram-logo', bgColor: 'bg-pink-500', textColor: 'text-pink-600' }
+            };
+
+            const getStatusBadge = (status, percentSpent) => {
+                if (status === 'over') {
+                    return '<span class="px-2 py-1 text-xs font-medium bg-red-100 text-red-700 rounded-full">Over Budget</span>';
+                }
+                if (status === 'warning') {
+                    return '<span class="px-2 py-1 text-xs font-medium bg-amber-100 text-amber-700 rounded-full">Warning</span>';
+                }
+                return '<span class="px-2 py-1 text-xs font-medium bg-emerald-100 text-emerald-700 rounded-full">On Track</span>';
+            };
+
+            const renderProgressBar = (percentSpent) => {
+                const pct = Math.min(100, percentSpent);
+                const color = percentSpent > 100 ? 'bg-red-500' : percentSpent > 80 ? 'bg-amber-500' : 'bg-emerald-500';
+                return `
+                    <div class="w-full bg-slate-200 rounded-full h-2">
+                        <div class="${color} h-2 rounded-full" style="width: ${pct}%"></div>
+                    </div>
+                    <div class="text-xs text-slate-500 mt-1">${percentSpent.toFixed(1)}%</div>
+                `;
+            };
+
+            let html = data.suggestions.map(item => {
+                const config = categoryConfig[item.key] || {};
+                return `
+                    <tr class="hover:bg-slate-50/50 transition-colors">
+                        <td class="px-4 py-3">
+                            <div class="flex items-center gap-2">
+                                <div class="w-7 h-7 rounded-lg ${config.bgColor} flex items-center justify-center flex-shrink-0">
+                                    <i class="ph-fill ${config.icon} text-white text-xs"></i>
+                                </div>
+                                <span class="font-semibold text-slate-800 text-sm">${item.label}</span>
+                            </div>
+                        </td>
+                        <td class="px-4 py-3 text-right font-medium tabular-nums">${formatCurrency(item.planBudget)}</td>
+                        <td class="px-4 py-3 text-right tabular-nums ${config.textColor}">${formatCurrency(item.actualSpent)}</td>
+                        <td class="px-4 py-3 text-right tabular-nums ${item.remaining < 0 ? 'text-red-600' : 'text-slate-600'}">${formatCurrency(item.remaining)}</td>
+                        <td class="px-4 py-3 w-32">${renderProgressBar(item.percentSpent)}</td>
+                        <td class="px-4 py-3 text-right bg-emerald-50/50">
+                            <span class="font-bold ${item.dailySuggestion < 0 ? 'text-red-600' : 'text-emerald-600'} text-base">${formatCurrency(Math.max(0, item.dailySuggestion))}</span>
+                            <div class="text-xs text-slate-400">/day</div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            // Add Total row
+            html += `
+                <tr class="bg-slate-100/70 border-t-2 border-slate-300 font-semibold">
+                    <td class="px-4 py-3">
+                        <div class="flex items-center gap-2">
+                            <div class="w-7 h-7 rounded-lg bg-slate-600 flex items-center justify-center flex-shrink-0">
+                                <i class="ph-fill ph-equals text-white text-xs"></i>
+                            </div>
+                            <span class="font-bold text-slate-800 text-sm">Total</span>
+                        </div>
+                    </td>
+                    <td class="px-4 py-3 text-right font-bold tabular-nums">${formatCurrency(data.total.planBudget)}</td>
+                    <td class="px-4 py-3 text-right font-bold tabular-nums text-slate-800">${formatCurrency(data.total.actualSpent)}</td>
+                    <td class="px-4 py-3 text-right font-bold tabular-nums ${data.total.remaining < 0 ? 'text-red-600' : 'text-slate-800'}">${formatCurrency(data.total.remaining)}</td>
+                    <td class="px-4 py-3">${renderProgressBar(data.total.percentSpent)}</td>
+                    <td class="px-4 py-3 text-right bg-emerald-100/70">
+                        <span class="font-bold ${data.total.dailySuggestion < 0 ? 'text-red-600' : 'text-emerald-700'} text-lg">${formatCurrency(Math.max(0, data.total.dailySuggestion))}</span>
+                        <div class="text-xs text-slate-500">/day</div>
+                    </td>
+                </tr>
+            `;
+
+            tbody.innerHTML = html;
+        }
+
+        // Refresh only budget suggestion data
+        async function refreshBudgetSuggestion() {
+            try {
+                const budgetSuggestion = await fetchBudgetSuggestion();
+                if (budgetSuggestion) {
+                    updateBudgetSuggestion(budgetSuggestion);
+                }
+            } catch (err) {
+                console.error('refreshBudgetSuggestion error:', err);
+            }
+        }
 
 
     </script>
 </body>
 
 </html>
+
